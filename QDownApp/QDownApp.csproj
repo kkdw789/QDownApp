@@ -93,6 +93,36 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonbaseLibrary\CommonbaseLibrary.csproj">
+      <Project>{d53eb7dc-9071-4ba3-8c55-1bed9c6d0af2}</Project>
+      <Name>CommonbaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QControlLibrary\QControlLibrary.csproj">
+      <Project>{f2d6174d-c9e8-47e9-8dff-327ef3daac2f}</Project>
+      <Name>QControlLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QHttp\QHttp.csproj">
+      <Project>{27f342de-fb35-47ba-becd-52b893bf034c}</Project>
+      <Name>QHttp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QSocket\QSocket.csproj">
+      <Project>{851aff0f-120c-43bd-b5c0-59f396637fb0}</Project>
+      <Name>QSocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QWCF\QWCF.csproj">
+      <Project>{0fa13b53-48e6-4b5e-99f6-e36e7cad1d1f}</Project>
+      <Name>QWCF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SystemManager\SystemManager.csproj">
+      <Project>{788f2a2b-eeb0-491a-a3be-b4f9054d3f1c}</Project>
+      <Name>SystemManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TyphoonProxy\TyphoonProxy.csproj">
+      <Project>{70501b10-03c9-47bf-898d-050dc206dba2}</Project>
+      <Name>TyphoonProxy</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

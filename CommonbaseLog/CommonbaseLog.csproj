@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{851AFF0F-120C-43BD-B5C0-59F396637FB0}</ProjectGuid>
+    <ProjectGuid>{9F69F37B-9FE3-4490-9E36-74F12D05102C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QSocket</RootNamespace>
-    <AssemblyName>QSocket</AssemblyName>
+    <RootNamespace>CommonbaseLog</RootNamespace>
+    <AssemblyName>CommonbaseLog</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -41,16 +41,6 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SystemManager\SystemManager.csproj">
-      <Project>{788f2a2b-eeb0-491a-a3be-b4f9054d3f1c}</Project>
-      <Name>SystemManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TyphoonProxy\TyphoonProxy.csproj">
-      <Project>{70501b10-03c9-47bf-898d-050dc206dba2}</Project>
-      <Name>TyphoonProxy</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

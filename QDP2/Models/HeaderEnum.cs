@@ -11,11 +11,11 @@ namespace QDP2.Models
     /// </summary>
     public enum HeaderEnum
     {
-        Q0 = "回执",
-        Q1 = "连接",
-        Q2 = "数据",
-        Q3 = "重传",
-        Q4 = "完成",
-        Q5 = "重连"
+        回执 = 0,
+        连接 = 1,
+        数据 = 2,
+        //重传 = 3,
+        完成 = 3,
+        重连 = 4
     }
 }

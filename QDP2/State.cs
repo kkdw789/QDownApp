@@ -43,6 +43,10 @@ namespace QDP2
         /// </summary>
         public static Overtime SystemOvertime=new Overtime();
         /// <summary>
+        /// 是否连接
+        /// </summary>
+        public static bool IsConn = false;
+        /// <summary>
         /// 块大小
         /// </summary>
         public static int BoxSize;

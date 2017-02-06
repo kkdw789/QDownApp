@@ -1,6 +1,7 @@
 ﻿using QDP2.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,29 @@ namespace QDP2
         /// </summary>
         public static DataPackage AnalyticDataPackage(byte[] data)
         {
-            return null;
+            List<string> list = BytesToString(data).Split(',').ToList();
+            DataPackage dataPackage = new DataPackage();
+            if (list.Count <= 2)
+                return dataPackage;
+
+            dataPackage.HeaderStr = (HeaderEnum)Enum.Parse(typeof(HeaderEnum), list[0]);
+            dataPackage.ID = int.Parse(list[1]);
+            dataPackage.IsReceiptInfo = false;
+            if (dataPackage.HeaderStr == HeaderEnum.回执)
+                dataPackage.IsReceiptInfo = true;
+
+            //dataPackage.SendTime = DateTime.Now;
+            string str="";
+            for (int i = 0; i < list.Count; i++)
+			{
+                if (i > 1 && i!= list.Count-1)
+                    str += list[i]+",";
+                else if (i > 1 && i == list.Count - 1)
+                    str += list[i];
+			}
+            dataPackage.Data = StringToBytes(str);
+            dataPackage.SendData = data;
+            return dataPackage;
         }
         /// <summary>
         /// 建立包
@@ -28,7 +51,7 @@ namespace QDP2
             dataPackage.HeaderStr=headerEnum;
             dataPackage.ID=id;
             dataPackage.IsReceiptInfo=false;
-            if(headerEnum==HeaderEnum.Q0)
+            if(headerEnum==HeaderEnum.回执)
             dataPackage.IsReceiptInfo=true;
 
             dataPackage.SendTime=DateTime.Now;
@@ -42,7 +65,7 @@ namespace QDP2
             dataPackage.HeaderStr = headerEnum;
             dataPackage.ID = id;
             dataPackage.IsReceiptInfo = false;
-            if (headerEnum == HeaderEnum.Q0)
+            if (headerEnum == HeaderEnum.回执)
                 dataPackage.IsReceiptInfo = true;
 
             dataPackage.SendTime = DateTime.Now;
@@ -50,6 +73,9 @@ namespace QDP2
             dataPackage.SendData = MergePackage(dataPackage);
             return dataPackage;
         }
+
+
+
 
         /// <summary>
         /// 合并数据包
@@ -59,7 +85,7 @@ namespace QDP2
         public static byte[] MergePackage(DataPackage dataPackage)
         {
             //Client.Send(Helper.MergePackage("数据," + packID + "," + Client.CurrentConnectionID + "," + Client.FileName + "," + packData)); 
-            string str=dataPackage.HeaderStr+ ","+dataPackage.ID+ ","+dataPackage.Data;
+            string str = dataPackage.HeaderStr + "," + dataPackage.ID + "," + BytesToString(dataPackage.Data);
             byte[] bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
@@ -77,6 +103,8 @@ namespace QDP2
         }
         public static byte[] StringToBytes(string str)
         {
+            if (string.IsNullOrWhiteSpace(str))
+                return new byte[0];
             byte[] bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;

@@ -37,11 +37,14 @@ namespace QDP2
             threadReceive.Start();
             System.Console.Write("监听启动");
         }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
         public static void SendData(DataPackage dataPackage)
         {
             //byte[] bytes = Helper.GetBytes(str);
             IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
-            State.UDPClient.Send(dataPackage.Data, dataPackage.Data.Length, remoteIPEndPoint);
+            State.UDPClient.Send(dataPackage.SendData, dataPackage.SendData.Length, remoteIPEndPoint);
         }
         /// <summary>
         /// 发送数据
@@ -81,9 +84,10 @@ namespace QDP2
                     //string message = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
 
                     byte[] receiveBytes = State.UDPClient.Receive(ref remoteIPEndPoint);
-                    string message = BytesToString(receiveBytes);
-                    System.Console.Write("接收数据:" + message);
-                    //AnalyticObj.AnalyticInfo(message);//解析
+                    //string message = Analytic.BytesToString(receiveBytes);
+                    //System.Console.Write("接收数据:" + message);
+                    DataPackage data= Analytic.AnalyticDataPackage(receiveBytes);
+                    Operation.ResponseLogic(data);
                 }
                 catch (Exception ex)
                 {

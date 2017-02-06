@@ -15,11 +15,15 @@ namespace QDP2.Models
         /// <summary>
         /// 头信息
         /// </summary>
-        public string HeaderStr { get; set; }
+        public HeaderEnum HeaderStr { get; set; }
         /// <summary>
         /// 数据
         /// </summary>
-        public Byte Data { get; set; }
+        public Byte[] Data { get; set; }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
+        public Byte[] SendData { get; set; }
         /// <summary>
         /// 是否是回执
         /// </summary>

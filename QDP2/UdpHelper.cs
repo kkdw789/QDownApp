@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QDP2.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,7 +37,12 @@ namespace QDP2
             threadReceive.Start();
             System.Console.Write("监听启动");
         }
-
+        public static void SendData(DataPackage dataPackage)
+        {
+            //byte[] bytes = Helper.GetBytes(str);
+            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            State.UDPClient.Send(dataPackage.Data, dataPackage.Data.Length, remoteIPEndPoint);
+        }
         /// <summary>
         /// 发送数据
         /// </summary>
@@ -54,43 +60,8 @@ namespace QDP2
             State.UDPClient.Close();
             System.Console.Write("服务停止");
         }
-        /// <summary>
-        /// 获取文件包总数
-        /// </summary>
-        public static long GetFilesNum(string path)
-        {
-            //62KB+1KB的头
-            //byte[] buffer = new byte[63488];
-            System.IO.FileInfo f = new FileInfo(path);
-            long num = f.Length / State.DataPackageSize;
-            return num;
-        }
-        public static byte[] StringToBytes(string str)
-        {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
-        public static string BytesToString(byte[] bytes)
-        {
-            return Encoding.Unicode.GetString(bytes, 0, bytes.Length);
 
-            //char[] chars = new char[bytes.Length / sizeof(char)];
-            //System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            //return new string(chars);
-        }
-        /// <summary>
-        /// 合并数据包
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static byte[] MergePackage(string str)
-        {
-            //Client.Send(Helper.MergePackage("数据," + packID + "," + Client.CurrentConnectionID + "," + Client.FileName + "," + packData)); 
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
-        }
+
 
 
 

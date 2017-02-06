@@ -50,7 +50,7 @@ namespace QDP2
             State.ServerInfo.Port = "8399";
             UdpHelper.InitCliend();
             UdpHelper.Monitor();
-            UdpHelper.SendData(UdpHelper.StringToBytes("你好"));
+            Operation.ConnectOperation();
             //UDPClient client = new UDPClient();
             //client.InitConnect("127.0.0.1", 8398, "127.0.0.1", 8399);
             //client.TransferFile(@"H:\12.exe","12.exe");

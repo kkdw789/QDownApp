@@ -12,8 +12,8 @@ namespace QDP2
     /// </summary>
     public class SendContainer
     {
-        private ConcurrentDictionary<string, SendBox> BoxList = new ConcurrentDictionary<string, SendBox>();
-        private BlockingCollection<SendBox> SendList = new BlockingCollection<SendBox>();
+        private ConcurrentDictionary<string, SendBox> BoxList = new ConcurrentDictionary<string, SendBox>();//待发送队列
+        private BlockingCollection<SendBox> SendList = new BlockingCollection<SendBox>();//排队发送队列
 
         /// <summary>
         /// 警戒块数
@@ -24,11 +24,31 @@ namespace QDP2
         /// </summary>
         public int BoxAnomalyNum { get; set; }
         /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string FilePath { get; set; }
+
+        /// <summary>
         /// 开始发送
         /// </summary>
-        public void BeginSend()
+        public void BeginSend(string filePath)
         {
+            FilePath = filePath;
+            Task.Factory.StartNew(() =>
+            {
+                LoadBoxs();//第一批，回执后继续添加
+                while (true)
+                {
+                    if (SendList.Count > 0)
+                    {
+                        SendBox item;
+                        SendList.TryTake(out item);
+                        if (item != null)
+                            UdpHelper.SendData(item);
+                    }
+                }
 
+            });
         }
         /// <summary>
         /// 暂停发送
@@ -45,14 +65,21 @@ namespace QDP2
 
         }
         /// <summary>
-        /// 添加块
+        /// 加载数据块
+        /// </summary>
+        public void LoadBoxs()
+        {
+             
+        }
+        /// <summary>
+        /// 进入待发送列表
         /// </summary>
         public void AddBox()
         {
 
         }
         /// <summary>
-        /// 移除块
+        /// 完成销毁块
         /// </summary>
         public void RemoveBox()
         {

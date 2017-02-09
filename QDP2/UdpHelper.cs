@@ -40,6 +40,15 @@ namespace QDP2
         /// <summary>
         /// 发送数据
         /// </summary>
+        public static void SendData(SendBox dataPackage)
+        {
+            //byte[] bytes = Helper.GetBytes(str);
+            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            State.UDPClient.Send(dataPackage.SendData, dataPackage.SendData.Length, remoteIPEndPoint);
+        }
+        /// <summary>
+        /// 发送数据
+        /// </summary>
         public static void SendData(DataPackage dataPackage)
         {
             //byte[] bytes = Helper.GetBytes(str);

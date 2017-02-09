@@ -15,9 +15,9 @@ namespace QDP2
     {
         public static UdpClient UDPClient;
         /// <summary>
-        /// 容器状态
+        /// 容器
         /// </summary>
-        public static string ContainerStatus;
+        public static SendContainer ContainerStatus;
         /// <summary>
         /// 客户端信息(自己)
         /// </summary>

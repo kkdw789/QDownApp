@@ -29,9 +29,13 @@ namespace QDP2
         /// <summary>
         /// 建立容器
         /// </summary>
-        public static void CreateContainer()
+        public static void CreateContainer(string FilePath)
         {
-
+            SendContainer container = new SendContainer();
+            State.ContainerStatus = container;
+            container.BoxWarnNum = 10;
+            container.BoxAnomalyNum = 20;
+            container.BeginSend(FilePath);
         }
         /// <summary>
         /// 销毁容器
@@ -109,7 +113,9 @@ namespace QDP2
                     System.Console.Write("建立连接！");
                     State.IsConn = true;
                     break;
-                case HeaderEnum.数据://删除容器块
+                case HeaderEnum.数据://删除容器块，并重新加载（不用返回数据包）
+                    State.ContainerStatus.RemoveBox();
+                    State.ContainerStatus.LoadBoxs();
                     break;
                 case HeaderEnum.完成://结束传输
                     break;

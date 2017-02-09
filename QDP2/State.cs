@@ -1,6 +1,7 @@
 ﻿using QDP2.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -30,6 +31,7 @@ namespace QDP2
         /// 文件或蜂窝信息
         /// </summary>
         public static FileDetails FileDetails=new FileDetails();
+        public static FileStream FS;
         /// <summary>
         /// 配置信息
         /// </summary>
@@ -53,11 +55,11 @@ namespace QDP2
         /// <summary>
         /// 包大小
         /// </summary>
-        public static int DataPackageSize;
-        public static long IDvalue = 0;
-        public static long GetID()
+        public static int DataPackageSize = 63488;
+        public static int IDvalue = 0;
+        public static int GetID()
         {
-            lock (UDPClient)
+            lock (SystemOvertime)
             {
                 IDvalue++;
                 return IDvalue;

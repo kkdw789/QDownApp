@@ -14,7 +14,20 @@ namespace QDP2.Models
         public SendBox()
         {
             ID = State.GetID();
-            OvertimeObj.OvertimeValue = 3000;
+            //加载数据
+            var thum = Analytic.AnalyticFlieData(ID);
+            if (thum != null)
+            {
+                Data = Analytic.BuildDataPackage(HeaderEnum.数据, ID, thum);
+                BoxStatez = BoxState.NotStart;
+            }
+            else
+            {
+                Data = Analytic.BuildDataPackage(HeaderEnum.完成, ID, new byte[0]);
+                State.ContainerStatus.IsCompleted = true;
+                BoxStatez = BoxState.Completed;
+            }
+            OvertimeObj.OvertimeValue = 1000;
             OvertimeObj.超时事件委托 += OvertimeObj_超时事件委托;
         }
 
@@ -26,7 +39,7 @@ namespace QDP2.Models
             State.ContainerStatus.AddBox(this);
             OvertimeObj.OnStart();
         }
-        public long ID { get; set; }
+        public int ID { get; set; }
         /// <summary>
         /// 已经发送次数
         /// </summary>
@@ -38,7 +51,7 @@ namespace QDP2.Models
         /// <summary>
         /// 超时计数器
         /// </summary>
-        public Overtime OvertimeObj { get; set; }
+        private Overtime OvertimeObj = new Overtime();
         /// <summary>
         /// 块状态
         /// </summary>

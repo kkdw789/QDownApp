@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using QDP2.Models;
+using System.IO;
 namespace QDP2
 {
     /// <summary>
@@ -34,6 +35,7 @@ namespace QDP2
         public void BeginSend(string filePath)
         {
             FilePath = filePath;
+            State.FS = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             Task.Factory.StartNew(() =>
             {
                 LoadBoxs(true);//第一批，回执后继续添加
@@ -45,8 +47,8 @@ namespace QDP2
                         SendList.TryTake(out item);
                         if (item != null)
                         {
+                            //System.Console.Write("发送数据ID" + item.ID);
                             UdpHelper.SendData(item);
-                            SendList.TryTake(out item);
                         }
                     }
                 }
@@ -66,12 +68,15 @@ namespace QDP2
         {
 
         }
+        public bool IsCompleted=false;
         /// <summary>
         /// 加载数据块
         /// </summary>
-        /// <param name="IsAnomaly">是否极限添加</param>
-        public void LoadBoxs(bool IsAnomaly)
+        /// <param name="IsAnomaly">是否添加</param>
+        public void LoadBoxs(bool IsAdd)
         {
+            if (IsCompleted)
+                return;
             if (BoxList.Count < BoxAnomalyNum)
             {
                 if (BoxList.Count < BoxWarnNum)
@@ -81,6 +86,8 @@ namespace QDP2
                         SendBox box = new SendBox();
                         BoxList.TryAdd(box.ID, box);
                         box.ActivityStart();
+                        if(box.BoxStatez == BoxState.Completed)
+                            return;
                     }
                 }
                 else
@@ -91,6 +98,8 @@ namespace QDP2
                     BoxList.TryAdd(box.ID, box);
                     //开启块自主传输活动
                     box.ActivityStart();
+                    if(box.BoxStatez == BoxState.Completed)
+                    return;
                 }
             }
         }
@@ -99,6 +108,9 @@ namespace QDP2
         /// </summary>
         public void AddBox(SendBox box)
         {
+            if (SendList.FirstOrDefault(f => f.ID == box.ID) != null)
+                return;
+
             SendList.Add(box);
         }
         /// <summary>
@@ -106,6 +118,7 @@ namespace QDP2
         /// </summary>
         public void RemoveBox(SendBox box)
         {
+            
             //SendList.TryTake(out box);
             BoxList.TryRemove(box.ID,out box);
             box.ActivityRemove();
@@ -133,6 +146,14 @@ namespace QDP2
                 //记录日志
                 State.Loger = ex.Message;
             }
+        }
+        /// <summary>
+        /// 销毁容器（完成时或异常时）
+        /// </summary>
+        public void ContainerDispose()
+        {
+            State.FS.Close();
+            State.FS.Dispose();
         }
     }
 }

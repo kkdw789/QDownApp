@@ -11,7 +11,15 @@ namespace QDP2.Models
     /// </summary>
     public class DataPackage
     {
-        public long ID { get; set; }
+        public DataPackage()
+        {
+        }
+        //public DataPackage(bool isInit)
+        //{
+        //    Data = new byte[State.DataPackageSize];
+        //    SendData = new byte[State.DataPackageSize];
+        //}
+        public int ID { get; set; }
         /// <summary>
         /// 头信息
         /// </summary>

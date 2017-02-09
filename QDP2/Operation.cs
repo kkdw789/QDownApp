@@ -42,7 +42,7 @@ namespace QDP2
         /// </summary>
         public static void ClearContainer()
         {
-
+            State.ContainerStatus.ContainerDispose();
         }
         /// <summary>
         /// 开启超时等待
@@ -89,10 +89,12 @@ namespace QDP2
                     ReceiptOperation(data.SendData);
                     break;
                 case HeaderEnum.数据://把储存起来
-                    ReceiptOperation(data.SendData);
+                    System.Console.Write("接收数据！" + data.ID);
+                    ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.数据, data.ID, "").SendData);
                     break;
                 case HeaderEnum.完成://组装文件
-                    ReceiptOperation(data.SendData);
+                    System.Console.Write("接收数据完成！" + data.ID);
+                    ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.完成, data.ID, "").SendData);
                     break;
                 case HeaderEnum.重连:
                     break;
@@ -102,7 +104,7 @@ namespace QDP2
 
         }
         /// <summary>
-        /// 接收回执处理
+        /// 接收回执处理（不用返回数据包）
         /// </summary>
         /// <param name="data"></param>
         private static void ResponseLogic2(DataPackage data)
@@ -113,11 +115,14 @@ namespace QDP2
                     System.Console.Write("建立连接！");
                     State.IsConn = true;
                     break;
-                case HeaderEnum.数据://删除容器块，并重新加载（不用返回数据包）
+                case HeaderEnum.数据://删除容器块，并重新加载
                     //返回给块的自主程序，让其自行销毁
+                    System.Console.Write("接收数据回执！" + data.ID);
                     State.ContainerStatus.ReceiptOK(data.ID);
                     break;
                 case HeaderEnum.完成://结束传输
+                    System.Console.Write("接收数据回执完成！" + data.ID);
+                    ClearContainer();
                     break;
                 case HeaderEnum.重连:
                     break;

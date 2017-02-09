@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace QDP2
 {
@@ -13,7 +14,7 @@ namespace QDP2
     {
         public delegate void MyEvent();
         public event MyEvent 超时事件委托;
-        //public string 超时事件委托 { get; set; }
+        public DispatcherTimer monitorTimerPing = new DispatcherTimer();
         /// <summary>
         ///  超时时间
         /// </summary>
@@ -23,21 +24,29 @@ namespace QDP2
         /// </summary>
         public void OnStart()
         {
+            
+            monitorTimerPing.Interval = new TimeSpan(OvertimeValue);
+            monitorTimerPing.Tick += monitorTimerPing_Tick;
+            monitorTimerPing.Start();
+        }
 
+        void monitorTimerPing_Tick(object sender, EventArgs e)
+        {
+            超时事件委托();
         }
         /// <summary>
         /// 停止并清理
         /// </summary>
         public void OnStop()
         {
-
+            monitorTimerPing.Stop();
         }
         /// <summary>
         /// 暂停
         /// </summary>
         public void OnPause()
         {
-
+            
         }
     }
    

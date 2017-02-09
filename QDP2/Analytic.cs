@@ -45,7 +45,7 @@ namespace QDP2
         /// <summary>
         /// 建立包
         /// </summary>
-        public static DataPackage BuildDataPackage(HeaderEnum headerEnum,int id, byte[] str)
+        public static DataPackage BuildDataPackage(HeaderEnum headerEnum, int id, byte[] str)
         {
             DataPackage dataPackage = new DataPackage();
             dataPackage.HeaderStr=headerEnum;
@@ -116,6 +116,32 @@ namespace QDP2
             //char[] chars = new char[bytes.Length / sizeof(char)];
             //System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
             //return new string(chars);
+        }
+        
+        /// <summary>
+        /// 获取文件传输
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] AnalyticFlieData(int offest)
+        {
+            //62KB+1KB的头
+            byte[] buffer = new byte[State.DataPackageSize];
+            //int offest2 = (offest - 1) * buffer.Length;
+            double length = State.FS.Length;
+            try
+            {
+                if ((State.FS.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    return buffer;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                //完成判断或者异常判断
+                return null;
+            }
         }
     }
 }

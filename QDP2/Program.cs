@@ -52,7 +52,7 @@ namespace QDP2
             UdpHelper.Monitor();
             Operation.ConnectOperation();
             Operation.StartTimeoutWait();
-            Operation.CreateContainer(@"H:\12.exe");
+            Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
             //UDPClient client = new UDPClient();
             //client.InitConnect("127.0.0.1", 8398, "127.0.0.1", 8399);
             //client.TransferFile(@"H:\12.exe","12.exe");

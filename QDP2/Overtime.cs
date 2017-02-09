@@ -16,6 +16,7 @@ namespace QDP2
         public delegate void MyEvent();
         public event MyEvent 超时事件委托;
         public Timer monitorTimerPing=new Timer();
+        private bool isStart = false;
         /// <summary>
         ///  超时时间
         /// </summary>
@@ -25,10 +26,16 @@ namespace QDP2
         /// </summary>
         public void OnStart()
         {
+            if (isStart)
+                monitorTimerPing.Start();
+            else
+            {
+                isStart = true;
+                monitorTimerPing.Interval = OvertimeValue;
+                monitorTimerPing.Elapsed += monitorTimerPing_Tick;
+                monitorTimerPing.Start();
 
-            monitorTimerPing.Interval = OvertimeValue;
-            monitorTimerPing.Elapsed += monitorTimerPing_Tick;
-            monitorTimerPing.Start();
+            }
         }
 
         void monitorTimerPing_Tick(object sender, EventArgs e)
@@ -37,7 +44,7 @@ namespace QDP2
             超时事件委托();
         }
         /// <summary>
-        /// 停止并清理
+        /// 停止
         /// </summary>
         public void OnStop()
         {

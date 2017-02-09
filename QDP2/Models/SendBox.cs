@@ -33,6 +33,7 @@ namespace QDP2.Models
 
         void OvertimeObj_超时事件委托()
         {
+            OvertimeObj.OnStop();
             //重新发送
             OvertimeObj.OvertimeValue = 1000;
             SendNum++;

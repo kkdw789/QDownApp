@@ -28,7 +28,7 @@ namespace QDP2
         /// 文件路径
         /// </summary>
         public string FilePath { get; set; }
-
+        private bool isBegin = true;
         /// <summary>
         /// 开始发送
         /// </summary>
@@ -39,7 +39,7 @@ namespace QDP2
             Task.Factory.StartNew(() =>
             {
                 LoadBoxs(true);//第一批，回执后继续添加
-                while (true)
+                while (isBegin)
                 {
                     if (SendList.Count > 0)
                     {
@@ -151,6 +151,7 @@ namespace QDP2
         /// </summary>
         public void ContainerDispose()
         {
+            //isBegin = false;
             State.FS.Close();
             State.FS.Dispose();
         }

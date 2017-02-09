@@ -122,6 +122,7 @@ namespace QDP2
                     break;
                 case HeaderEnum.完成://结束传输
                     System.Console.Write("接收数据回执完成！" + data.ID);
+                    State.ContainerStatus.ReceiptOK(data.ID);
                     ClearContainer();
                     break;
                 case HeaderEnum.重连:

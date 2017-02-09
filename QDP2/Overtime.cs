@@ -11,13 +11,15 @@ namespace QDP2
     /// </summary>
     public class Overtime
     {
-        public string 超时事件委托 { get; set; }
+        public delegate void MyEvent();
+        public event MyEvent 超时事件委托;
+        //public string 超时事件委托 { get; set; }
         /// <summary>
         ///  超时时间
         /// </summary>
         public int OvertimeValue { get; set; }
         /// <summary>
-        /// 开启
+        /// 开启和重置刷新
         /// </summary>
         public void OnStart()
         {

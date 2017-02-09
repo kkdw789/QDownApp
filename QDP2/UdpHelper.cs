@@ -44,7 +44,7 @@ namespace QDP2
         {
             //byte[] bytes = Helper.GetBytes(str);
             IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
-            State.UDPClient.Send(dataPackage.SendData, dataPackage.SendData.Length, remoteIPEndPoint);
+            State.UDPClient.Send(dataPackage.Data.SendData, dataPackage.Data.SendData.Length, remoteIPEndPoint);
         }
         /// <summary>
         /// 发送数据

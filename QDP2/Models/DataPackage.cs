@@ -11,7 +11,7 @@ namespace QDP2.Models
     /// </summary>
     public class DataPackage
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
         /// <summary>
         /// 头信息
         /// </summary>

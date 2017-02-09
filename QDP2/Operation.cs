@@ -114,8 +114,8 @@ namespace QDP2
                     State.IsConn = true;
                     break;
                 case HeaderEnum.数据://删除容器块，并重新加载（不用返回数据包）
-                    State.ContainerStatus.RemoveBox();
-                    State.ContainerStatus.LoadBoxs();
+                    //返回给块的自主程序，让其自行销毁
+                    State.ContainerStatus.ReceiptOK(data.ID);
                     break;
                 case HeaderEnum.完成://结束传输
                     break;

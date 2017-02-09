@@ -12,11 +12,11 @@ namespace QDP2
     /// </summary>
     public class SendContainer
     {
-        private ConcurrentDictionary<string, SendBox> BoxList = new ConcurrentDictionary<string, SendBox>();//待发送队列
+        private ConcurrentDictionary<long, SendBox> BoxList = new ConcurrentDictionary<long, SendBox>();//待发送队列
         private BlockingCollection<SendBox> SendList = new BlockingCollection<SendBox>();//排队发送队列
 
         /// <summary>
-        /// 警戒块数
+        /// 警戒块数，暂时不用
         /// </summary>
         public int BoxWarnNum { get; set; }
         /// <summary>
@@ -36,7 +36,7 @@ namespace QDP2
             FilePath = filePath;
             Task.Factory.StartNew(() =>
             {
-                LoadBoxs();//第一批，回执后继续添加
+                LoadBoxs(true);//第一批，回执后继续添加
                 while (true)
                 {
                     if (SendList.Count > 0)
@@ -44,10 +44,12 @@ namespace QDP2
                         SendBox item;
                         SendList.TryTake(out item);
                         if (item != null)
+                        {
                             UdpHelper.SendData(item);
+                            SendList.TryTake(out item);
+                        }
                     }
                 }
-
             });
         }
         /// <summary>
@@ -67,23 +69,70 @@ namespace QDP2
         /// <summary>
         /// 加载数据块
         /// </summary>
-        public void LoadBoxs()
+        /// <param name="IsAnomaly">是否极限添加</param>
+        public void LoadBoxs(bool IsAnomaly)
         {
-             
+            if (BoxList.Count < BoxAnomalyNum)
+            {
+                if (BoxList.Count < BoxWarnNum)
+                {
+                    for (int i = 0; i < BoxWarnNum - BoxList.Count; i++)
+                    {
+                        SendBox box = new SendBox();
+                        BoxList.TryAdd(box.ID, box);
+                        box.ActivityStart();
+                    }
+                }
+                else
+                {
+                    //创建块
+                    SendBox box = new SendBox();
+                    //添加块至列表
+                    BoxList.TryAdd(box.ID, box);
+                    //开启块自主传输活动
+                    box.ActivityStart();
+                }
+            }
         }
         /// <summary>
         /// 进入待发送列表
         /// </summary>
-        public void AddBox()
+        public void AddBox(SendBox box)
         {
-
+            SendList.Add(box);
         }
         /// <summary>
-        /// 完成销毁块
+        /// 完成销毁块(块收到回执后 由块自主调用销毁)
         /// </summary>
-        public void RemoveBox()
+        public void RemoveBox(SendBox box)
         {
-
+            //SendList.TryTake(out box);
+            BoxList.TryRemove(box.ID,out box);
+            box.ActivityRemove();
+            LoadBoxs(true);//销毁添加
+        }
+        /// <summary>
+        /// 获取回执
+        /// </summary>
+        public void ReceiptOK(long id)
+        {
+            try
+            {
+                SendBox box;
+                //找到块
+                BoxList.TryGetValue(id, out box);
+                if (box != null)
+                    //销毁块
+                    RemoveBox(box);
+                else
+                    //记录日志
+                    State.Loger = "无法找到数据块";
+            }
+            catch (Exception ex)
+            {
+                //记录日志
+                State.Loger = ex.Message;
+            }
         }
     }
 }

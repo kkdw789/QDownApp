@@ -11,7 +11,22 @@ namespace QDP2.Models
     /// </summary>
     public class SendBox
     {
-        public int ID { get; set; }
+        public SendBox()
+        {
+            ID = State.GetID();
+            OvertimeObj.OvertimeValue = 3000;
+            OvertimeObj.超时事件委托 += OvertimeObj_超时事件委托;
+        }
+
+        void OvertimeObj_超时事件委托()
+        {
+            //重新发送
+            SendNum++;
+            JustSendTime = DateTime.Now;
+            State.ContainerStatus.AddBox(this);
+            OvertimeObj.OnStart();
+        }
+        public long ID { get; set; }
         /// <summary>
         /// 已经发送次数
         /// </summary>
@@ -36,6 +51,21 @@ namespace QDP2.Models
         /// 最近发送时间
         /// </summary>
         public DateTime JustSendTime { get; set; }
+        public void ActivityStart()
+        {
+            SendNum++;
+            FirstSendTime = DateTime.Now;
+            JustSendTime = DateTime.Now;
+            State.ContainerStatus.AddBox(this);
+            OvertimeObj.OnStart();
+        }
+        public void ActivityRemove()
+        {
+            OvertimeObj.OnStop();
+            OvertimeObj = null;
+            this.Data.Data = null;
+            this.Data = null;
+        }
     }
     public enum BoxState
     {

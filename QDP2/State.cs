@@ -54,5 +54,14 @@ namespace QDP2
         /// 包大小
         /// </summary>
         public static int DataPackageSize;
+        public static long IDvalue = 0;
+        public static long GetID()
+        {
+            lock (UDPClient)
+            {
+                IDvalue++;
+                return IDvalue;
+            }
+        }
     }
 }

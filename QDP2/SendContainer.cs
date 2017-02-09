@@ -110,7 +110,6 @@ namespace QDP2
         {
             if (SendList.FirstOrDefault(f => f.ID == box.ID) != null)
                 return;
-
             SendList.Add(box);
         }
         /// <summary>

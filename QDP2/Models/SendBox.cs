@@ -34,10 +34,12 @@ namespace QDP2.Models
         void OvertimeObj_超时事件委托()
         {
             //重新发送
+            OvertimeObj.OvertimeValue = 1000;
             SendNum++;
             JustSendTime = DateTime.Now;
             State.ContainerStatus.AddBox(this);
-            OvertimeObj.OnStart();
+            if (OvertimeObj != null)
+                OvertimeObj.OnStart();
         }
         public int ID { get; set; }
         /// <summary>

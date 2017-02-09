@@ -59,7 +59,7 @@ namespace QDP2
         public static int IDvalue = 0;
         public static int GetID()
         {
-            lock (SystemOvertime)
+            lock (UDPClient)
             {
                 IDvalue++;
                 return IDvalue;

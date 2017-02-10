@@ -73,6 +73,7 @@ namespace QDP2
         {
 
         }
+        private static int cc = 1;
         /// <summary>
         /// 接收判断与响应
         /// </summary>
@@ -92,9 +93,11 @@ namespace QDP2
                 case HeaderEnum.数据://把储存起来
                     System.Console.Write("接收数据！" + data.ID + "\n");
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.数据, data.ID, "").SendData);
+                    cc++;
                     break;
                 case HeaderEnum.完成://组装文件
                     System.Console.Write("接收数据完成！" + data.ID + "\n");
+                    System.Console.Write("接收数据总数！" + cc + "\n");
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.完成, data.ID, "").SendData);
                     break;
                 case HeaderEnum.重连:

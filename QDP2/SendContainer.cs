@@ -78,47 +78,50 @@ namespace QDP2
         /// <param name="IsAnomaly">是否添加</param>
         public void LoadBoxs(bool IsAdd)
         {
-            if (IsCompleted)
-                return;
-            if (BoxList.Count < BoxAnomalyNum)
-            {
-                if (BoxList.Count < BoxWarnNum)
+            Task.Factory.StartNew(() =>
                 {
-                    for (int i = 0; i < BoxWarnNum; i++)
+                    if (IsCompleted)
+                        return;
+                    if (BoxList.Count < BoxAnomalyNum)
                     {
-                        SendBox box = new SendBox();
-                        BoxList.TryAdd(box.ID, box);
-                        box.ActivityStart();
-                        if (box.BoxStatez == BoxState.Completed)
+                        if (BoxList.Count < BoxWarnNum)
                         {
-                            IsCompleted = true;
-                            return;
+                            for (int i = 0; i < BoxWarnNum; i++)
+                            {
+                                SendBox box = new SendBox();
+                                BoxList.TryAdd(box.ID, box);
+                                box.ActivityStart();
+                                if (box.BoxStatez == BoxState.Completed)
+                                {
+                                    IsCompleted = true;
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //创建块
+                            SendBox box = new SendBox();
+                            //添加块至列表
+                            BoxList.TryAdd(box.ID, box);
+                            //开启块自主传输活动
+                            box.ActivityStart();
+                            if (box.BoxStatez == BoxState.Completed)
+                            {
+                                IsCompleted = true;
+                                return;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    //创建块
-                    SendBox box = new SendBox();
-                    //添加块至列表
-                    BoxList.TryAdd(box.ID, box);
-                    //开启块自主传输活动
-                    box.ActivityStart();
-                    if (box.BoxStatez == BoxState.Completed)
-                    {
-                        IsCompleted = true;
-                        return;
-                    }
-                }
-            }
+                });
         }
         /// <summary>
         /// 进入待发送列表
         /// </summary>
         public void AddBox(SendBox box)
         {
-            if (SendList.FirstOrDefault(f => f.ID == box.ID) != null)
-                return;
+            //if (SendList.Count!=0&&SendList.FirstOrDefault(f => f.ID == box.ID) != null)
+            //    return;
             SendList.Add(box);
         }
         /// <summary>

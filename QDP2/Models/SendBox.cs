@@ -20,7 +20,7 @@ namespace QDP2.Models
             {
                 Data = Analytic.BuildDataPackage(HeaderEnum.数据, ID, thum);
                 BoxStatez = BoxState.NotStart;
-                OvertimeObj.OvertimeValue = 1000;
+                OvertimeObj.OvertimeValue = 100;
                 OvertimeObj.超时事件委托 += OvertimeObj_超时事件委托;
             }
             else
@@ -37,9 +37,11 @@ namespace QDP2.Models
 
         void OvertimeObj_超时事件委托()
         {
+            if (OvertimeObj == null)
+                return;
             OvertimeObj.OnStop();
             //重新发送
-            OvertimeObj.OvertimeValue = 1000;
+            OvertimeObj.OvertimeValue = 100;
             SendNum++;
             JustSendTime = DateTime.Now;
             State.ContainerStatus.AddBox(this);

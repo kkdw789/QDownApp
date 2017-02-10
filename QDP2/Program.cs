@@ -28,10 +28,10 @@ namespace QDP2
             //运行蜂窝（传输）
             //初始化系统超时
             Console.WriteLine("输入自己IP");
-            State.ClientInfo.IP = "127.0.0.1";
+            State.ClientInfo.IP = "192.168.1.151";
             State.ClientInfo.Port = "8399";
             Console.WriteLine("输入对方IP");
-            State.ServerInfo.IP = "127.0.0.1";
+            State.ServerInfo.IP = "192.168.1.151";
             State.ServerInfo.Port = "8398";
             UdpHelper.InitCliend();
             UdpHelper.Monitor();
@@ -45,10 +45,10 @@ namespace QDP2
             //运行容器（传输）
             //初始化系统超时
             Console.WriteLine("输入自己IP");
-            State.ClientInfo.IP = "127.0.0.1";
+            State.ClientInfo.IP = "192.168.1.151";
             State.ClientInfo.Port = "8398";
             Console.WriteLine("输入对方IP");
-            State.ServerInfo.IP = "127.0.0.1";
+            State.ServerInfo.IP = "192.168.1.151";
             State.ServerInfo.Port = "8399";
             UdpHelper.InitCliend();
             UdpHelper.Monitor();

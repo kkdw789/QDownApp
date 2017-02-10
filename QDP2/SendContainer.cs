@@ -48,7 +48,7 @@ namespace QDP2
                         //bool isTake=SendList.TryTake(out item);
                         if (item != null)
                         {
-                            Thread.Sleep(1);
+                            //Thread.Sleep(1);
                             UdpHelper.SendData(item);
                             SendList.Remove(item);
                             

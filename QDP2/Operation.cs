@@ -90,7 +90,7 @@ namespace QDP2
                     ReceiptOperation(data.SendData);
                     break;
                 case HeaderEnum.数据://把储存起来
-                    //System.Console.Write("接收数据！" + data.ID + "\n");
+                    System.Console.Write("接收数据！" + data.ID + "\n");
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.数据, data.ID, "").SendData);
                     break;
                 case HeaderEnum.完成://组装文件
@@ -118,7 +118,7 @@ namespace QDP2
                     break;
                 case HeaderEnum.数据://删除容器块，并重新加载
                     //返回给块的自主程序，让其自行销毁
-                    //System.Console.Write("接收数据回执！" + data.ID + "\n");
+                    System.Console.Write("接收数据回执！" + data.ID + "\n");
                     State.ContainerStatus.ReceiptOK(data.ID);
                     break;
                 case HeaderEnum.完成://结束传输

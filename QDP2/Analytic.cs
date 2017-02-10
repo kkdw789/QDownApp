@@ -138,7 +138,7 @@ namespace QDP2
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message+"\n");
                 //完成判断或者异常判断
                 return null;
             }

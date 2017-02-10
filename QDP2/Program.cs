@@ -29,12 +29,12 @@ namespace QDP2
             //初始化系统超时
             State.ClientInfo.IP = "127.0.0.1";
             State.ClientInfo.Port = "8399";
+            Console.WriteLine("输入对方IP");
+            //State.ServerInfo.IP = Console.ReadLine();
             State.ServerInfo.IP = "127.0.0.1";
             State.ServerInfo.Port = "8398";
             UdpHelper.InitCliend();
             UdpHelper.Monitor();
-            //UDPClient client = new UDPClient();
-            //client.InitConnect("127.0.0.1", 8399, "127.0.0.1", 8398);
             System.Console.ReadLine();
         }
         private static void Client()
@@ -46,16 +46,16 @@ namespace QDP2
             //初始化系统超时
             State.ClientInfo.IP = "127.0.0.1";
             State.ClientInfo.Port = "8398";
+            Console.WriteLine("输入对方IP");
+            //State.ServerInfo.IP = Console.ReadLine();
             State.ServerInfo.IP = "127.0.0.1";
             State.ServerInfo.Port = "8399";
             UdpHelper.InitCliend();
             UdpHelper.Monitor();
             Operation.ConnectOperation();
             Operation.StartTimeoutWait();
-            Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
-            //UDPClient client = new UDPClient();
-            //client.InitConnect("127.0.0.1", 8398, "127.0.0.1", 8399);
-            //client.TransferFile(@"H:\12.exe","12.exe");
+            //Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
+            Operation.CreateContainer(@"H:\12.exe");
             System.Console.ReadLine();
         }
     }

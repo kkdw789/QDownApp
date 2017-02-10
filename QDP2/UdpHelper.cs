@@ -42,6 +42,11 @@ namespace QDP2
         /// </summary>
         public static void SendData(SendBox dataPackage)
         {
+            if (dataPackage.Data == null)
+            {
+                Console.WriteLine("数据有包空" + dataPackage.ID + "\n");
+                return;
+            }
             //byte[] bytes = Helper.GetBytes(str);
             IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
             State.UDPClient.Send(dataPackage.Data.SendData, dataPackage.Data.SendData.Length, remoteIPEndPoint);

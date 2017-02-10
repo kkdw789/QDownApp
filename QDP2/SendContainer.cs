@@ -14,8 +14,8 @@ namespace QDP2
     /// </summary>
     public class SendContainer
     {
-        private ConcurrentDictionary<long, SendBox> BoxList = new ConcurrentDictionary<long, SendBox>();//待发送队列
-        private BlockingCollection<SendBox> SendList = new BlockingCollection<SendBox>();//排队发送队列
+        public ConcurrentDictionary<long, SendBox> BoxList = new ConcurrentDictionary<long, SendBox>();//待发送队列
+        private List<SendBox> SendList = new List<SendBox>();//排队发送队列
 
         /// <summary>
         /// 警戒块数，暂时不用
@@ -44,13 +44,14 @@ namespace QDP2
                 {
                     if (SendList.Count > 0)
                     {
-                        SendBox item;
-                        SendList.TryTake(out item);
+                        SendBox item = SendList.FirstOrDefault();
+                        //bool isTake=SendList.TryTake(out item);
                         if (item != null)
                         {
-                            Thread.Sleep(1);  
-                            //System.Console.Write("发送数据ID" + item.ID);
+                            Thread.Sleep(1);
                             UdpHelper.SendData(item);
+                            SendList.Remove(item);
+                            
                         }
                     }
                 }
@@ -83,13 +84,16 @@ namespace QDP2
             {
                 if (BoxList.Count < BoxWarnNum)
                 {
-                    for (int i = 0; i < BoxWarnNum - BoxList.Count; i++)
+                    for (int i = 0; i < BoxWarnNum; i++)
                     {
                         SendBox box = new SendBox();
                         BoxList.TryAdd(box.ID, box);
                         box.ActivityStart();
-                        if(box.BoxStatez == BoxState.Completed)
+                        if (box.BoxStatez == BoxState.Completed)
+                        {
+                            IsCompleted = true;
                             return;
+                        }
                     }
                 }
                 else
@@ -100,8 +104,11 @@ namespace QDP2
                     BoxList.TryAdd(box.ID, box);
                     //开启块自主传输活动
                     box.ActivityStart();
-                    if(box.BoxStatez == BoxState.Completed)
-                    return;
+                    if (box.BoxStatez == BoxState.Completed)
+                    {
+                        IsCompleted = true;
+                        return;
+                    }
                 }
             }
         }
@@ -121,9 +128,11 @@ namespace QDP2
         {
             
             //SendList.TryTake(out box);
-            BoxList.TryRemove(box.ID,out box);
-            box.ActivityRemove();
-            LoadBoxs(true);//销毁添加
+            if (BoxList.TryRemove(box.ID, out box))
+            {
+                box.ActivityRemove();
+                LoadBoxs(true);//销毁添加
+            }
         }
         /// <summary>
         /// 获取回执

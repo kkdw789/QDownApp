@@ -20,15 +20,19 @@ namespace QDP2.Models
             {
                 Data = Analytic.BuildDataPackage(HeaderEnum.数据, ID, thum);
                 BoxStatez = BoxState.NotStart;
+                OvertimeObj.OvertimeValue = 1000;
+                OvertimeObj.超时事件委托 += OvertimeObj_超时事件委托;
             }
             else
             {
                 Data = Analytic.BuildDataPackage(HeaderEnum.完成, ID, new byte[0]);
                 State.ContainerStatus.IsCompleted = true;
                 BoxStatez = BoxState.Completed;
+                OvertimeObj.OvertimeValue = 1000;
+                OvertimeObj.超时事件委托 += OvertimeObj_检查完成事件委托;
+                OvertimeObj.OnStart();
             }
-            OvertimeObj.OvertimeValue = 1000;
-            OvertimeObj.超时事件委托 += OvertimeObj_超时事件委托;
+
         }
 
         void OvertimeObj_超时事件委托()
@@ -38,6 +42,18 @@ namespace QDP2.Models
             OvertimeObj.OvertimeValue = 1000;
             SendNum++;
             JustSendTime = DateTime.Now;
+            State.ContainerStatus.AddBox(this);
+            if (OvertimeObj != null)
+                OvertimeObj.OnStart();
+        }
+        void OvertimeObj_检查完成事件委托()
+        {
+            OvertimeObj.OnStop();
+            //重新发送
+            OvertimeObj.OvertimeValue = 1000;
+            SendNum++;
+            JustSendTime = DateTime.Now;
+            if (State.ContainerStatus.BoxList.Count==1)
             State.ContainerStatus.AddBox(this);
             if (OvertimeObj != null)
                 OvertimeObj.OnStart();
@@ -72,6 +88,8 @@ namespace QDP2.Models
             SendNum++;
             FirstSendTime = DateTime.Now;
             JustSendTime = DateTime.Now;
+            if (this.BoxStatez == BoxState.Completed)
+                return;
             State.ContainerStatus.AddBox(this);
             OvertimeObj.OnStart();
         }

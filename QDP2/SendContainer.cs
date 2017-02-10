@@ -82,11 +82,13 @@ namespace QDP2
                 {
                     if (IsCompleted)
                         return;
-                    if (BoxList.Count < BoxAnomalyNum)
+
+                    int num = BoxList.Count;
+                    if (num < BoxAnomalyNum)
                     {
-                        if (BoxList.Count < BoxWarnNum)
+                        if (num < BoxWarnNum)
                         {
-                            for (int i = 0; i < BoxWarnNum; i++)
+                            for (int i = 0; i < BoxWarnNum - num; i++)
                             {
                                 SendBox box = new SendBox();
                                 BoxList.TryAdd(box.ID, box);

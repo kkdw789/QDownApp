@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using QDP2.Models;
 using System.IO;
+using System.Threading;
 namespace QDP2
 {
     /// <summary>
@@ -47,6 +48,7 @@ namespace QDP2
                         SendList.TryTake(out item);
                         if (item != null)
                         {
+                            Thread.Sleep(1);  
                             //System.Console.Write("发送数据ID" + item.ID);
                             UdpHelper.SendData(item);
                         }
@@ -147,7 +149,7 @@ namespace QDP2
             }
         }
         /// <summary>
-        /// 销毁容器（完成时或异常时）
+        /// 销毁容器（所有块完成时或异常时）
         /// </summary>
         public void ContainerDispose()
         {

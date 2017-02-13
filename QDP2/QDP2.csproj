@@ -46,7 +46,6 @@
     <Compile Include="Models\ClientDetails.cs" />
     <Compile Include="Models\DataPackage.cs" />
     <Compile Include="FileBeehive.cs" />
-    <Compile Include="Models\FileDetails.cs" />
     <Compile Include="Models\HeaderEnum.cs" />
     <Compile Include="Models\SetterDetails.cs" />
     <Compile Include="Operation.cs" />

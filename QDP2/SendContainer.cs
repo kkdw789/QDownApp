@@ -15,7 +15,7 @@ namespace QDP2
     public class SendContainer
     {
         public ConcurrentDictionary<long, SendBox> BoxList = new ConcurrentDictionary<long, SendBox>();//待发送队列
-        private List<SendBox> SendList = new List<SendBox>();//排队发送队列
+        private ConcurrentQueue<SendBox> SendList = new ConcurrentQueue<SendBox>();//排队发送队列
 
         /// <summary>
         /// 警戒块数，暂时不用
@@ -44,13 +44,13 @@ namespace QDP2
                 {
                     if (SendList.Count > 0)
                     {
-                        SendBox item = SendList.FirstOrDefault();
+                        SendBox item;
+                        bool isGET = SendList.TryDequeue(out item);
                         //bool isTake=SendList.TryTake(out item);
-                        if (item != null)
+                        if (item != null && isGET)
                         {
                             //Thread.Sleep(1);
                             UdpHelper.SendData(item);
-                            SendList.Remove(item);
                             
                         }
                     }
@@ -124,7 +124,7 @@ namespace QDP2
         {
             //if (SendList.Count!=0&&SendList.FirstOrDefault(f => f.ID == box.ID) != null)
             //    return;
-            SendList.Add(box);
+            SendList.Enqueue(box);
         }
         /// <summary>
         /// 完成销毁块(块收到回执后 由块自主调用销毁)

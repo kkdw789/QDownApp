@@ -64,6 +64,8 @@ namespace QDP2
         /// </summary>
         public static void CreateFileBeehive()
         {
+            State.FileBeehiveObj = new FileBeehive();
+            State.FileBeehiveObj.CreateBeehive();
 
         }
         /// <summary>
@@ -81,23 +83,27 @@ namespace QDP2
         {
             switch (data.HeaderStr)
             {
-               //System.Console.Write("接收数据:" + data.HeaderStr);
+                //System.Console.Write("接收数据:" + data.HeaderStr);
                 case HeaderEnum.回执:
                     ResponseLogic2(Analytic.AnalyticDataPackage(data.Data));
                     break;
                 case HeaderEnum.连接://建立连接并且服务端完成
-                    System.Console.Write("建立连接！" + "\n");
+                    System.Console.WriteLine("建立连接！");
                     State.IsConn = true;
                     ReceiptOperation(data.SendData);
                     break;
                 case HeaderEnum.数据://把储存起来
                     //System.Console.Write("接收数据！" + data.ID + "\n");
+                    if (State.FileBeehiveObj == null)
+                        CreateFileBeehive();
+                    State.FileBeehiveObj.AddBox(data);
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.数据, data.ID, "").SendData);
                     cc++;
                     break;
                 case HeaderEnum.完成://组装文件
-                    System.Console.Write("接收数据完成！" + data.ID + "\n");
-                    System.Console.Write("接收数据总数！" + cc + "\n");
+                    System.Console.WriteLine("接收数据完成！" + data.ID);
+                    System.Console.WriteLine("接收数据总数！" + cc);
+                    State.FileBeehiveObj.CompositeFile();
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.完成, data.ID, "").SendData);
                     break;
                 case HeaderEnum.重连:
@@ -116,7 +122,7 @@ namespace QDP2
             switch (data.HeaderStr)
             {
                 case HeaderEnum.连接://建立连接并且客户端完成
-                    System.Console.Write("建立连接！" + "\n");
+                    System.Console.WriteLine("建立连接！");
                     State.IsConn = true;
                     break;
                 case HeaderEnum.数据://删除容器块，并重新加载
@@ -125,14 +131,14 @@ namespace QDP2
                     State.ContainerStatus.ReceiptOK(data.ID);
                     break;
                 case HeaderEnum.完成://结束传输
-                    System.Console.Write("接收数据回执完成！" + data.ID + "\n");
+                    System.Console.WriteLine("接收数据回执完成！" + data.ID);
                     State.ContainerStatus.ReceiptOK(data.ID);
                     ClearContainer();
                     break;
                 case HeaderEnum.重连:
                     break;
                 default:
-                    System.Console.Write("接收数据有误！" + "\n");
+                    System.Console.WriteLine("接收数据有误！");
                     break;
             }
         }

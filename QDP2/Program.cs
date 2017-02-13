@@ -56,6 +56,7 @@ namespace QDP2
             Operation.StartTimeoutWait();
             //Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
             Operation.CreateContainer(@"H:\SQL.iso");
+            //Operation.CreateContainer(@"H:\12.exe");
             System.Console.ReadLine();
         }
     }

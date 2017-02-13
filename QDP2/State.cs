@@ -20,6 +20,10 @@ namespace QDP2
         /// </summary>
         public static SendContainer ContainerStatus;
         /// <summary>
+        /// 蜂窝
+        /// </summary>
+        public static FileBeehive FileBeehiveObj;
+        /// <summary>
         /// 客户端信息(自己)
         /// </summary>
         public static ClientDetails ClientInfo=new ClientDetails();
@@ -27,10 +31,6 @@ namespace QDP2
         /// 服务端信息(对方)
         /// </summary>
         public static ClientDetails ServerInfo=new ClientDetails();
-        /// <summary>
-        /// 文件或蜂窝信息
-        /// </summary>
-        public static FileDetails FileDetails=new FileDetails();
         public static FileStream FS;
         /// <summary>
         /// 配置信息

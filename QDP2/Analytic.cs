@@ -143,5 +143,20 @@ namespace QDP2
                 return null;
             }
         }
+        /// <summary>
+        /// 写入文件数据
+        /// </summary>
+        /// <returns></returns>
+        public static void WriteFlieData(Byte[] data)
+        {
+            try
+            {
+                State.FS.Write(data, 0, data.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + "\n");
+            }
+        }
     }
 }

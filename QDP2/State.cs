@@ -44,6 +44,8 @@ namespace QDP2
         /// 系统超时器
         /// </summary>
         public static Overtime SystemOvertime=new Overtime();
+        public static int BoxOverTime = 300;
+        public static int CompleteOverTime = 1000;
         /// <summary>
         /// 是否连接
         /// </summary>

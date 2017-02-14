@@ -112,6 +112,7 @@ namespace QDP2
             }
 
         }
+        public static DateTime datetime;
         /// <summary>
         /// 接收回执处理（不用返回数据包）
         /// </summary>
@@ -124,6 +125,7 @@ namespace QDP2
                     System.Console.WriteLine("建立连接！");
                     State.IsConn = true;
                     Console.WriteLine("开始传输");
+                    datetime = DateTime.Now;
                     State.ContainerStatus.BeginSend();
                     break;
                 case HeaderEnum.数据://删除容器块，并重新加载
@@ -133,6 +135,7 @@ namespace QDP2
                     break;
                 case HeaderEnum.完成://结束传输
                     System.Console.WriteLine("接收数据回执完成！" + data.ID);
+                     System.Console.WriteLine(DateTime.Now.Subtract(datetime));
                     State.ContainerStatus.ReceiptOK(data.ID);
                     ClearContainer();
                     break;

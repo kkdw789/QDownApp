@@ -27,7 +27,9 @@ namespace QDP2
         {
             Task.Factory.StartNew(() =>
             {
-                FilePath = Environment.CurrentDirectory + "test.ls";
+                FilePath = Environment.CurrentDirectory + @"\test.ls";
+                if (File.Exists(FilePath))
+                    File.Delete(FilePath);
                 State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 while (isBegin || ThumBoxList.Count > 0)
                 {
@@ -37,7 +39,6 @@ namespace QDP2
                     if (item != null)
                     {
                         currentWriteID++;
-                        //ThumBoxList.TryTake(out item);//删除
                         Analytic.WriteFlieData(item.Data);
                     }
                     if (ThumBoxList.Count(c => c.Key >= currentWriteID) == 0 && !isBegin)//在完成接收后，如果没有大于的就跳出循环

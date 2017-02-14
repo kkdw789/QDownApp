@@ -44,8 +44,10 @@ namespace QDP2
         /// 系统超时器
         /// </summary>
         public static Overtime SystemOvertime=new Overtime();
-        public static int BoxOverTime = 300;
+        public static int BoxOverTime = 1000;
         public static int CompleteOverTime = 1000;
+        public static int BoxWarnNum = 3;
+        public static int BoxAnomalyNum = 10;
         /// <summary>
         /// 是否连接
         /// </summary>
@@ -57,7 +59,8 @@ namespace QDP2
         /// <summary>
         /// 包大小
         /// </summary>
-        public static int DataPackageSize = 63488;
+        public static int DataPackageSize = 10000;
+        //public static int DataPackageSize = 63488;
         public static int IDvalue = 0;
         public static int GetID()
         {

@@ -28,12 +28,12 @@ namespace QDP2
             //运行蜂窝（传输）
             //初始化系统超时
             Console.WriteLine("输入自己IP");
-            State.ClientInfo.IP = "192.168.1.151";
+            //State.ClientInfo.IP = "127.0.0.1";
             State.ClientInfo.Port = "8399";
             Console.WriteLine("输入对方IP");
-            State.ServerInfo.IP = "192.168.1.151";
+            //State.ServerInfo.IP = Console.ReadLine();
             State.ServerInfo.Port = "8398";
-            UdpHelper.InitCliend();
+            UdpHelper.InitCliend(true);
             UdpHelper.Monitor();
             System.Console.ReadLine();
         }
@@ -45,18 +45,20 @@ namespace QDP2
             //运行容器（传输）
             //初始化系统超时
             Console.WriteLine("输入自己IP");
-            State.ClientInfo.IP = "192.168.1.151";
+            //State.ClientInfo.IP = "127.0.0.1";
             State.ClientInfo.Port = "8398";
             Console.WriteLine("输入对方IP");
-            State.ServerInfo.IP = "192.168.1.151";
+            State.ServerInfo.IP = Console.ReadLine();
             State.ServerInfo.Port = "8399";
-            UdpHelper.InitCliend();
+            UdpHelper.InitCliend(false);
             UdpHelper.Monitor();
+            Operation.CreateContainer(@"H:\12.exe");
             Operation.ConnectOperation();
             Operation.StartTimeoutWait();
             //Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
-            Operation.CreateContainer(@"H:\SQL.iso");
+            //Operation.CreateContainer(@"H:\SQL.iso");
             //Operation.CreateContainer(@"H:\12.exe");
+            
             System.Console.ReadLine();
         }
     }

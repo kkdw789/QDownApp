@@ -19,9 +19,13 @@ namespace QDP2
         /// <summary>
         /// 初始化UDP客户端
         /// </summary>
-        public static void InitCliend()
+        public static void InitCliend(bool isServer)
         {
-            IPEndPoint localIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ClientInfo.IP), int.Parse(State.ClientInfo.Port));
+            IPEndPoint localIPEndPoint;
+            //if (!isServer)
+                //localIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ClientInfo.IP), int.Parse(State.ClientInfo.Port));
+            //else
+                localIPEndPoint = new IPEndPoint(IPAddress.Any, int.Parse(State.ClientInfo.Port));
             State.UDPClient = new UdpClient(localIPEndPoint);
 
             System.Console.Write("服务初始化");
@@ -48,7 +52,11 @@ namespace QDP2
                 return;
             }
             //byte[] bytes = Helper.GetBytes(str);
-            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            IPEndPoint remoteIPEndPoint;
+            if (State.ServerInfo.IPEndPoint == null)
+                remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            else
+                remoteIPEndPoint = State.ServerInfo.IPEndPoint;
             State.UDPClient.Send(dataPackage.Data.SendData, dataPackage.Data.SendData.Length, remoteIPEndPoint);
         }
         /// <summary>
@@ -57,7 +65,11 @@ namespace QDP2
         public static void SendData(DataPackage dataPackage)
         {
             //byte[] bytes = Helper.GetBytes(str);
-            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            IPEndPoint remoteIPEndPoint;
+            if (State.ServerInfo.IPEndPoint == null)
+                remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            else
+                remoteIPEndPoint = State.ServerInfo.IPEndPoint;
             State.UDPClient.Send(dataPackage.SendData, dataPackage.SendData.Length, remoteIPEndPoint);
         }
         /// <summary>
@@ -66,7 +78,11 @@ namespace QDP2
         public static void SendData(byte[] bytes)
         {
             //byte[] bytes = Helper.GetBytes(str);
-            IPEndPoint remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            IPEndPoint remoteIPEndPoint;
+            if (State.ServerInfo.IPEndPoint == null)
+                remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
+            else
+                remoteIPEndPoint = State.ServerInfo.IPEndPoint;
             State.UDPClient.Send(bytes, bytes.Length, remoteIPEndPoint);
         }
         /// <summary>
@@ -98,8 +114,9 @@ namespace QDP2
                     //string message = Encoding.ASCII.GetString(receiveBytes, 0, receiveBytes.Length);
 
                     byte[] receiveBytes = State.UDPClient.Receive(ref remoteIPEndPoint);
+                    State.ServerInfo.IPEndPoint = remoteIPEndPoint;
                     //string message = Analytic.BytesToString(receiveBytes);
-                    //System.Console.Write("接收数据:" + message);
+                    //System.Console.Write("接收数据:");
                     DataPackage data= Analytic.AnalyticDataPackage(receiveBytes);
                     Operation.ResponseLogic(data);
                 }

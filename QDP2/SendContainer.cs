@@ -33,9 +33,8 @@ namespace QDP2
         /// <summary>
         /// 开始发送
         /// </summary>
-        public void BeginSend(string filePath)
+        public void BeginSend()
         {
-            FilePath = filePath;
             State.FS = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             Task.Factory.StartNew(() =>
             {

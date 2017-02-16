@@ -19,7 +19,7 @@ namespace QDP2.Models
         //    Data = new byte[State.DataPackageSize];
         //    SendData = new byte[State.DataPackageSize];
         //}
-        public int ID { get; set; }
+        public Int64 ID { get; set; }
         /// <summary>
         /// 头信息
         /// </summary>

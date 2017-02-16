@@ -15,11 +15,11 @@ namespace QDP2
     public class FileBeehive
     {
         //private ConcurrentQueue<SendBox> ThumBoxList = new ConcurrentQueue<SendBox>();
-        private ConcurrentDictionary<int, DataPackage> ThumBoxList = new ConcurrentDictionary<int, DataPackage>();
+        private ConcurrentDictionary<Int64, DataPackage> ThumBoxList = new ConcurrentDictionary<Int64, DataPackage>();
         public string FilePath { get; set; }
         public string FileInfo { get; set; }
         private bool isBegin = true;
-        private int currentWriteID = 1;
+        private Int64 currentWriteID = 1;
         /// <summary>
         /// 创建蜂窝
         /// </summary>
@@ -27,7 +27,7 @@ namespace QDP2
         {
             Task.Factory.StartNew(() =>
             {
-                FilePath = Environment.CurrentDirectory + @"\test.ls";
+                FilePath = Environment.CurrentDirectory + @"\OpenStudio-1.13.3.44ac130fa7-Win64.exe";
                 if (File.Exists(FilePath))
                     File.Delete(FilePath);
                 State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -35,9 +35,10 @@ namespace QDP2
                 {
                     //DataPackage item = ThumBoxList.FirstOrDefault(f => f.ID == currentWriteID);
                     DataPackage item;
-                    ThumBoxList.TryRemove(currentWriteID,out item);
+                    ThumBoxList.TryRemove(currentWriteID, out item);
                     if (item != null)
                     {
+                        //System.Console.WriteLine("写入数据！" + currentWriteID);
                         currentWriteID++;
                         Analytic.WriteFlieData(item.Data);
                     }
@@ -47,6 +48,7 @@ namespace QDP2
                         break;
                     }
                 }
+                System.Console.WriteLine("写入数据完成！" + currentWriteID);
                 State.FS.Close();
                 State.FS.Dispose();
             });

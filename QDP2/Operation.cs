@@ -132,6 +132,8 @@ namespace QDP2
                     //返回给块的自主程序，让其自行销毁
                     //System.Console.Write("接收数据回执！" + data.ID + "\n");
                     State.ContainerStatus.ReceiptOK(data.ID);
+                    //保存时间，判断超时
+                    State.SystemOvertime = DateTime.Now;
                     break;
                 case HeaderEnum.完成://结束传输
                     System.Console.WriteLine("接收数据回执完成！" + data.ID);

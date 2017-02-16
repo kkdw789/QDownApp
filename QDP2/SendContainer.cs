@@ -26,6 +26,14 @@ namespace QDP2
         /// </summary>
         public int BoxAnomalyNum { get; set; }
         /// <summary>
+        /// 文件总包数
+        /// </summary>
+        public Int64 BoxNum = 0;
+        /// <summary>
+        /// 文件尾包大小
+        /// </summary>
+        public long LastBoxSize = 0;
+        /// <summary>
         /// 文件路径
         /// </summary>
         public string FilePath { get; set; }
@@ -36,6 +44,7 @@ namespace QDP2
         public void BeginSend()
         {
             State.FS = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            BoxNum = Analytic.GetFilesNum(FilePath, out LastBoxSize);
             Task.Factory.StartNew(() =>
             {
                 LoadBoxs(true);//第一批，回执后继续添加
@@ -43,6 +52,12 @@ namespace QDP2
                 {
                     if (SendList.Count > 0)
                     {
+                        if (State.SystemOvertime != null && DateTime.Now.Subtract((DateTime)State.SystemOvertime) > new TimeSpan(0,0,3))
+                        {
+                            State.IsConn = false;
+                            isBegin = false;
+                            return;
+                        }
                         SendBox item;
                         bool isGET = SendList.TryDequeue(out item);
                         //bool isTake=SendList.TryTake(out item);
@@ -50,7 +65,7 @@ namespace QDP2
                         {
                             //Thread.Sleep(1);
                             UdpHelper.SendData(item);
-                            
+
                         }
                     }
                 }

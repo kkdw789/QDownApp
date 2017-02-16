@@ -41,8 +41,13 @@ namespace QDP2.Models
                 return;
             OvertimeObj.OnStop();
             //重新发送
-            OvertimeObj.OvertimeValue = State.BoxOverTime;
+            OvertimeObj.OvertimeValue = State.BoxOverTime + SendNum * State.OvertimeIncreaseNum;
             SendNum++;
+            //if (SendNum == 5)
+            //{
+            //    BoxStatez = BoxState.FailStop;
+            //    return;
+            //}
             JustSendTime = DateTime.Now;
             State.ContainerStatus.AddBox(this);
             if (OvertimeObj != null)
@@ -60,7 +65,7 @@ namespace QDP2.Models
             if (OvertimeObj != null)
                 OvertimeObj.OnStart();
         }
-        public int ID { get; set; }
+        public Int64 ID { get; set; }
         /// <summary>
         /// 已经发送次数
         /// </summary>

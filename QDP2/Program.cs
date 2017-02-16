@@ -52,7 +52,11 @@ namespace QDP2
             State.ServerInfo.Port = "8399";
             UdpHelper.InitCliend(false);
             UdpHelper.Monitor();
-            Operation.CreateContainer(@"H:\12.exe");
+            Console.WriteLine("");
+            Console.WriteLine("输入传输文件路径：");
+            //Operation.CreateContainer(Console.ReadLine());
+            Operation.CreateContainer(@"H:\OpenStudio-1.13.3.44ac130fa7-Win64.exe");
+            //Operation.CreateContainer(@"H:\XX.png");
             //Operation.CreateContainer(@"H:\xf-adsk2016_x64.exe");
             //Operation.CreateContainer(@"H:\SQL.iso");
             //Operation.CreateContainer(@"H:\Maya_16.0.1312.exe");

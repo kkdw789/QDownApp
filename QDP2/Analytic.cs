@@ -45,7 +45,7 @@ namespace QDP2
         /// <summary>
         /// 建立包
         /// </summary>
-        public static DataPackage BuildDataPackage(HeaderEnum headerEnum, int id, byte[] str)
+        public static DataPackage BuildDataPackage(HeaderEnum headerEnum, Int64 id, byte[] str)
         {
             DataPackage dataPackage = new DataPackage();
             dataPackage.HeaderStr=headerEnum;
@@ -59,7 +59,7 @@ namespace QDP2
             dataPackage.SendData = MergePackage(dataPackage);
             return dataPackage;
         }
-        public static DataPackage BuildDataPackage(HeaderEnum headerEnum, int id, string str)
+        public static DataPackage BuildDataPackage(HeaderEnum headerEnum, Int64 id, string str)
         {
             DataPackage dataPackage = new DataPackage();
             dataPackage.HeaderStr = headerEnum;
@@ -93,12 +93,13 @@ namespace QDP2
         /// <summary>
         /// 获取文件包总数
         /// </summary>
-        public static long GetFilesNum(string path)
+        public static long GetFilesNum(string path, out long lastBoxSize)
         {
             //62KB+1KB的头
             //byte[] buffer = new byte[63488];
             System.IO.FileInfo f = new FileInfo(path);
             long num = f.Length / State.DataPackageSize;
+            lastBoxSize = f.Length % State.DataPackageSize;
             return num;
         }
         public static byte[] StringToBytes(string str)
@@ -111,36 +112,45 @@ namespace QDP2
         }
         public static string BytesToString(byte[] bytes)
         {
-            return Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+            //return Encoding.Unicode.GetString(bytes, 0, bytes.Length);
 
-            //char[] chars = new char[bytes.Length / sizeof(char)];
-            //System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            //return new string(chars);
+            char[] chars = new char[bytes.Length / sizeof(char)];
+            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+            return new string(chars);
         }
-        
         /// <summary>
         /// 获取文件传输
         /// </summary>
         /// <returns></returns>
-        public static byte[] AnalyticFlieData(int offest)
+        public static byte[] AnalyticFlieData(Int64 offest)
         {
-            //62KB+1KB的头
-            byte[] buffer = new byte[State.DataPackageSize];
-            //int offest2 = (offest - 1) * buffer.Length;
-            double length = State.FS.Length;
-            try
+            lock (State.FS)
             {
-                if ((State.FS.Read(buffer, 0, buffer.Length)) > 0)
+                //62KB+1KB的头
+                byte[] buffer = new byte[State.DataPackageSize];
+                if (offest == State.ContainerStatus.BoxNum + 1)
                 {
-                    return buffer;
+                    buffer = new byte[State.ContainerStatus.LastBoxSize];
                 }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message+"\n");
-                //完成判断或者异常判断
-                return null;
+                if (offest > State.ContainerStatus.BoxNum + 1)
+                {
+                    return null;
+                }
+                //Console.WriteLine(State.ContainerStatus.BoxNum + " " + offest);
+                try
+                {
+                    if ((State.FS.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        return buffer;
+                    }
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + "\n");
+                    //完成判断或者异常判断
+                    return null;
+                }
             }
         }
         /// <summary>
@@ -149,6 +159,9 @@ namespace QDP2
         /// <returns></returns>
         public static void WriteFlieData(Byte[] data)
         {
+            lock (State.FS)
+            {
+
             try
             {
                 State.FS.Write(data, 0, data.Length);
@@ -156,6 +169,8 @@ namespace QDP2
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message + "\n");
+            }
+
             }
         }
     }

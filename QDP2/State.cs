@@ -40,14 +40,16 @@ namespace QDP2
         /// 日志
         /// </summary>
         public static string Loger;
+        public static DateTime? SystemOvertime=null;
         /// <summary>
         /// 系统超时器
         /// </summary>
-        public static Overtime SystemOvertime=new Overtime();
-        public static int BoxOverTime = 800;
-        public static int CompleteOverTime = 1000;
-        public static int BoxWarnNum = 5;
-        public static int BoxAnomalyNum = 15;
+        //public static Overtime SystemOvertime=new Overtime();
+        public static int BoxOverTime = 800;//丢包重发
+        public static int CompleteOverTime = 1000;//完成检测时间，以及无回执掉线时间
+        public static int BoxWarnNum = 5;//容器警戒数量
+        public static int BoxAnomalyNum = 15;//容器极限数量
+        public static int OvertimeIncreaseNum = 300;//超时递增延时
         /// <summary>
         /// 是否连接
         /// </summary>
@@ -59,10 +61,10 @@ namespace QDP2
         /// <summary>
         /// 包大小
         /// </summary>
-        public static int DataPackageSize = 10000;//或2000
+        public static int DataPackageSize = 63488;//或20000
         //public static int DataPackageSize = 63488;
-        public static int IDvalue = 0;
-        public static int GetID()
+        public static Int64 IDvalue = 0;
+        public static Int64 GetID()
         {
             lock (UDPClient)
             {

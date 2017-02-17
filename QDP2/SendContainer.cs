@@ -52,7 +52,7 @@ namespace QDP2
                 {
                     if (SendList.Count > 0)
                     {
-                        if (State.SystemOvertime != null && DateTime.Now.Subtract((DateTime)State.SystemOvertime) > new TimeSpan(0,0,3))
+                        if (State.SystemOvertime != null && DateTime.Now.Subtract((DateTime)State.SystemOvertime) > new TimeSpan(0, 0, 3))
                         {
                             State.IsConn = false;
                             isBegin = false;
@@ -63,10 +63,12 @@ namespace QDP2
                         //bool isTake=SendList.TryTake(out item);
                         if (item != null && isGET)
                         {
-                            //Thread.Sleep(1);
+                            //Thread.Sleep(10);
                             UdpHelper.SendData(item);
 
                         }
+
+
                     }
                 }
             });
@@ -126,6 +128,7 @@ namespace QDP2
                             {
                                 IsCompleted = true;
                                 return;
+
                             }
                         }
                     }

@@ -51,13 +51,20 @@ namespace QDP2
                 Console.WriteLine("数据有包空" + dataPackage.ID + "\n");
                 return;
             }
+
+            //test
+            //if (State.FileBeehiveObj == null)
+            //    Operation.CreateFileBeehive();
+            //State.FileBeehiveObj.AddBox(dataPackage.Data);
+
             //byte[] bytes = Helper.GetBytes(str);
             IPEndPoint remoteIPEndPoint;
             if (State.ServerInfo.IPEndPoint == null)
                 remoteIPEndPoint = new IPEndPoint(IPAddress.Parse(State.ServerInfo.IP), int.Parse(State.ServerInfo.Port));
             else
                 remoteIPEndPoint = State.ServerInfo.IPEndPoint;
-            State.UDPClient.Send(dataPackage.Data.SendData, dataPackage.Data.SendData.Length, remoteIPEndPoint);
+            int c = State.UDPClient.Send(dataPackage.Data.SendData, dataPackage.Data.SendData.Length, remoteIPEndPoint);
+                //Console.WriteLine("实际发送：" + c);
         }
         /// <summary>
         /// 发送数据

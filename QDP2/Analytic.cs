@@ -57,6 +57,17 @@ namespace QDP2
             dataPackage.SendTime=DateTime.Now;
             dataPackage.Data=str;
             dataPackage.SendData = MergePackage(dataPackage);
+
+            var sad = Analytic.AnalyticDataPackage(dataPackage.SendData).Data;
+            //var sad = Analytic.StringToBytes(Analytic.BytesToString(str));
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] != sad[i] || sad.Length != str.Length)
+                    Console.WriteLine("解析结果不一致！");
+            }
+            //if (!str.Equals(sad))
+            //    Console.WriteLine("解析结果不一致！");
+
             return dataPackage;
         }
         public static DataPackage BuildDataPackage(HeaderEnum headerEnum, Int64 id, string str)
@@ -86,9 +97,9 @@ namespace QDP2
         {
             //Client.Send(Helper.MergePackage("数据," + packID + "," + Client.CurrentConnectionID + "," + Client.FileName + "," + packData)); 
             string str = dataPackage.HeaderStr + "," + dataPackage.ID + "," + BytesToString(dataPackage.Data);
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
+            //byte[] bytes = new byte[str.Length * sizeof(char)];
+            //System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            return Analytic.StringToBytes(str);
         }
         /// <summary>
         /// 获取文件包总数
@@ -106,15 +117,19 @@ namespace QDP2
         {
             if (string.IsNullOrWhiteSpace(str))
                 return new byte[0];
+            //return Encoding.ASCII.GetBytes(str);
+
             byte[] bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
         public static string BytesToString(byte[] bytes)
         {
-            //return Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+            //return Encoding.ASCII.GetString(bytes);
 
             char[] chars = new char[bytes.Length / sizeof(char)];
+            if (bytes.Length % sizeof(char) > 0)
+                Console.WriteLine("数据转换有问题：");
             System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
             return new string(chars);
         }
@@ -124,7 +139,7 @@ namespace QDP2
         /// <returns></returns>
         public static byte[] AnalyticFlieData(Int64 offest)
         {
-            lock (State.FS)
+            lock (obj)
             {
                 //62KB+1KB的头
                 byte[] buffer = new byte[State.DataPackageSize];
@@ -153,15 +168,15 @@ namespace QDP2
                 }
             }
         }
+        private static object obj = new object();
         /// <summary>
         /// 写入文件数据
         /// </summary>
         /// <returns></returns>
         public static void WriteFlieData(Byte[] data)
         {
-            lock (State.FS)
+            lock (obj)
             {
-
             try
             {
                 State.FS.Write(data, 0, data.Length);

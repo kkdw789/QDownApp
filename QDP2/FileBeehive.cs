@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QDP2
@@ -27,27 +28,52 @@ namespace QDP2
         {
             Task.Factory.StartNew(() =>
             {
-                FilePath = Environment.CurrentDirectory + @"\OpenStudio-1.13.3.44ac130fa7-Win64.exe";
+                FilePath = Environment.CurrentDirectory + @"\dotNetFx45.exe";
                 if (File.Exists(FilePath))
                     File.Delete(FilePath);
-                State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-                while (isBegin || ThumBoxList.Count > 0)
-                {
-                    //DataPackage item = ThumBoxList.FirstOrDefault(f => f.ID == currentWriteID);
-                    DataPackage item;
-                    ThumBoxList.TryRemove(currentWriteID, out item);
-                    if (item != null)
+                //State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                //while (isBegin || ThumBoxList.Count > 0)
+                //{
+                    using (State.FS=new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
                     {
-                        //System.Console.WriteLine("写入数据！" + currentWriteID);
-                        currentWriteID++;
-                        Analytic.WriteFlieData(item.Data);
+                        while (isBegin || ThumBoxList.Count > 0)
+                        {
+                            DataPackage item;
+                            ThumBoxList.TryRemove(currentWriteID, out item);
+                            if (item != null)
+                            {
+                                //System.Console.WriteLine("写入数据！" + currentWriteID);
+                                currentWriteID++;
+                                Analytic.WriteFlieData(item.Data);
+                            }
+                            if (ThumBoxList.Count(c => c.Key >= currentWriteID) == 0 && !isBegin)//在完成接收后，如果没有大于的就跳出循环
+                            {
+                                System.Console.WriteLine("写入跳出完成！" + ThumBoxList.Count + " " + currentWriteID);
+                                ThumBoxList = null;
+                                break;
+                            }
+                        }
                     }
-                    if (ThumBoxList.Count(c => c.Key >= currentWriteID) == 0 && !isBegin)//在完成接收后，如果没有大于的就跳出循环
-                    {
-                        ThumBoxList = null;
-                        break;
-                    }
-                }
+
+                    //lock (State.FS)
+                    //{
+                    //    Thread.Sleep(10);
+                    //    //DataPackage item = ThumBoxList.FirstOrDefault(f => f.ID == currentWriteID);
+                    //    DataPackage item;
+                    //    ThumBoxList.TryRemove(currentWriteID, out item);
+                    //    if (item != null)
+                    //    {
+                    //        //System.Console.WriteLine("写入数据！" + currentWriteID);
+                    //        currentWriteID++;
+                    //        Analytic.WriteFlieData(item.Data);
+                    //    }
+                    //    if (ThumBoxList.Count(c => c.Key >= currentWriteID) == 0 && !isBegin)//在完成接收后，如果没有大于的就跳出循环
+                    //    {
+                    //        ThumBoxList = null;
+                    //        break;
+                    //    }
+                    //}
+                //}
                 System.Console.WriteLine("写入数据完成！" + currentWriteID);
                 State.FS.Close();
                 State.FS.Dispose();

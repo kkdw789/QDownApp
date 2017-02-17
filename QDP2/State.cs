@@ -61,7 +61,8 @@ namespace QDP2
         /// <summary>
         /// 包大小
         /// </summary>
-        public static int DataPackageSize = 63488;//或10000
+        public static int DataPackageSize = 10000;//或10000
+        public static int DataPackageSizeBackups = 63488;//或10000
         //public static int DataPackageSize = 63488;
         public static Int64 IDvalue = 0;
         public static Int64 GetID()

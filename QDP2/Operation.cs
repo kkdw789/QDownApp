@@ -17,7 +17,10 @@ namespace QDP2
         /// </summary>
         public static void ConnectOperation()
         {
-            UdpHelper.SendData(Analytic.BuildDataPackage(HeaderEnum.连接,0,""));
+            byte[] buffer0 = new byte[State.DataPackageSizeBackups];
+            byte[] buffer1 = new byte[State.DataPackageSize];
+            UdpHelper.SendData(Analytic.BuildDataPackage(HeaderEnum.连接, 0, buffer0));
+            UdpHelper.SendData(Analytic.BuildDataPackage(HeaderEnum.连接, 1, buffer1));
         }
         /// <summary>
         /// 回执
@@ -122,7 +125,12 @@ namespace QDP2
             switch (data.HeaderStr)
             {
                 case HeaderEnum.连接://建立连接并且客户端完成
-                    System.Console.WriteLine("建立连接！");
+                    if (State.DataPackageSize == State.DataPackageSizeBackups)
+                        return;
+                    if (data.ID != 1)
+                        State.DataPackageSize = State.DataPackageSizeBackups;
+
+                    System.Console.WriteLine("建立连接！" + State.DataPackageSize);
                     State.IsConn = true;
                     Console.WriteLine("开始传输");
                     datetime = DateTime.Now;

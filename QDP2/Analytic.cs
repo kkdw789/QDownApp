@@ -63,15 +63,15 @@ namespace QDP2
                 dataPackage.Data = str;
                 dataPackage.SendData = MergePackage(dataPackage);
 
-                var sad = Analytic.AnalyticDataPackage(dataPackage.SendData).Data;
-                //var sad = Analytic.StringToBytes(Analytic.BytesToString(str));
-                for (int i = 0; i < str.Length; i++)
-                {
-                    if (str[i] != sad[i] || sad.Length != str.Length)
-                        Console.WriteLine("解析结果不一致！");
-                }
-                //if (!str.Equals(sad))
-                //    Console.WriteLine("解析结果不一致！");
+                //var sad = Analytic.AnalyticDataPackage(dataPackage.SendData).Data;
+                ////var sad = Analytic.StringToBytes(Analytic.BytesToString(str));
+                //for (int i = 0; i < str.Length; i++)
+                //{
+                //    if (str[i] != sad[i] || sad.Length != str.Length)
+                //        Console.WriteLine("解析结果不一致！");
+                //}
+                ////if (!str.Equals(sad))
+                ////    Console.WriteLine("解析结果不一致！");
 
                 return dataPackage;
             }
@@ -143,7 +143,10 @@ namespace QDP2
 
                 char[] chars = new char[bytes.Length / sizeof(char)];
                 if (bytes.Length % sizeof(char) > 0)
+                {
+                    chars = new char[(bytes.Length+1) / sizeof(char)];
                     Console.WriteLine("数据转换有问题：");
+                }
                 System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
                 return new string(chars);
             }

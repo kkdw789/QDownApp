@@ -38,6 +38,7 @@ namespace QDP2
                     {
                         while (isBegin || ThumBoxList.Count > 0)
                         {
+                            //Thread.Sleep(10);
                             DataPackage item;
                             ThumBoxList.TryRemove(currentWriteID, out item);
                             if (item != null)

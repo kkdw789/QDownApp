@@ -50,25 +50,29 @@ namespace QDP2
                 LoadBoxs(true);//第一批，回执后继续添加
                 while (isBegin)
                 {
-                    if (SendList.Count > 0)
+                    lock (State.FS)
                     {
-                        if (State.SystemOvertime != null && DateTime.Now.Subtract((DateTime)State.SystemOvertime) > new TimeSpan(0, 0, 3))
+
+
+                        if (SendList.Count > 0)
                         {
-                            State.IsConn = false;
-                            isBegin = false;
-                            return;
-                        }
-                        SendBox item;
-                        bool isGET = SendList.TryDequeue(out item);
-                        //bool isTake=SendList.TryTake(out item);
-                        if (item != null && isGET)
-                        {
-                            //Thread.Sleep(10);
-                            UdpHelper.SendData(item);
+                            if (State.SystemOvertime != null && DateTime.Now.Subtract((DateTime)State.SystemOvertime) > new TimeSpan(0, 0, 3))
+                            {
+                                State.IsConn = false;
+                                isBegin = false;
+                                return;
+                            }
+                            SendBox item;
+                            bool isGET = SendList.TryDequeue(out item);
+                            //bool isTake=SendList.TryTake(out item);
+                            if (item != null && isGET)
+                            {
+                                //Thread.Sleep(10);
+                                UdpHelper.SendData(item);
+
+                            }
 
                         }
-
-
                     }
                 }
             });
@@ -88,6 +92,7 @@ namespace QDP2
 
         }
         public bool IsCompleted=false;
+        private static object obj = new object();
         /// <summary>
         /// 加载数据块
         /// </summary>
@@ -98,37 +103,39 @@ namespace QDP2
                 {
                     if (IsCompleted)
                         return;
-
-                    int num = BoxList.Count;
-                    if (num < BoxAnomalyNum)
+                    lock (obj)
                     {
-                        if (num < BoxWarnNum)
+                        int num = BoxList.Count;
+                        if (num < BoxAnomalyNum)
                         {
-                            for (int i = 0; i < BoxWarnNum - num; i++)
+                            if (num < BoxWarnNum)
                             {
+                                for (int i = 0; i < BoxWarnNum - num; i++)
+                                {
+                                    SendBox box = new SendBox();
+                                    BoxList.TryAdd(box.ID, box);
+                                    box.ActivityStart();
+                                    if (box.BoxStatez == BoxState.Completed)
+                                    {
+                                        IsCompleted = true;
+                                        return;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //创建块
                                 SendBox box = new SendBox();
+                                //添加块至列表
                                 BoxList.TryAdd(box.ID, box);
+                                //开启块自主传输活动
                                 box.ActivityStart();
                                 if (box.BoxStatez == BoxState.Completed)
                                 {
                                     IsCompleted = true;
                                     return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //创建块
-                            SendBox box = new SendBox();
-                            //添加块至列表
-                            BoxList.TryAdd(box.ID, box);
-                            //开启块自主传输活动
-                            box.ActivityStart();
-                            if (box.BoxStatez == BoxState.Completed)
-                            {
-                                IsCompleted = true;
-                                return;
 
+                                }
                             }
                         }
                     }

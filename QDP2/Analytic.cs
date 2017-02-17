@@ -18,71 +18,80 @@ namespace QDP2
         /// </summary>
         public static DataPackage AnalyticDataPackage(byte[] data)
         {
-            List<string> list = BytesToString(data).Split(',').ToList();
-            DataPackage dataPackage = new DataPackage();
-            if (list.Count <= 2)
+            lock (obj)
+            {
+                List<string> list = BytesToString(data).Split(',').ToList();
+                DataPackage dataPackage = new DataPackage();
+                if (list.Count <= 2)
+                    return dataPackage;
+
+                dataPackage.HeaderStr = (HeaderEnum)Enum.Parse(typeof(HeaderEnum), list[0]);
+                dataPackage.ID = int.Parse(list[1]);
+                dataPackage.IsReceiptInfo = false;
+                if (dataPackage.HeaderStr == HeaderEnum.回执)
+                    dataPackage.IsReceiptInfo = true;
+
+                //dataPackage.SendTime = DateTime.Now;
+                string str = "";
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (i > 1 && i != list.Count - 1)
+                        str += list[i] + ",";
+                    else if (i > 1 && i == list.Count - 1)
+                        str += list[i];
+                }
+                dataPackage.Data = StringToBytes(str);
+                dataPackage.SendData = data;
                 return dataPackage;
-
-            dataPackage.HeaderStr = (HeaderEnum)Enum.Parse(typeof(HeaderEnum), list[0]);
-            dataPackage.ID = int.Parse(list[1]);
-            dataPackage.IsReceiptInfo = false;
-            if (dataPackage.HeaderStr == HeaderEnum.回执)
-                dataPackage.IsReceiptInfo = true;
-
-            //dataPackage.SendTime = DateTime.Now;
-            string str="";
-            for (int i = 0; i < list.Count; i++)
-			{
-                if (i > 1 && i!= list.Count-1)
-                    str += list[i]+",";
-                else if (i > 1 && i == list.Count - 1)
-                    str += list[i];
-			}
-            dataPackage.Data = StringToBytes(str);
-            dataPackage.SendData = data;
-            return dataPackage;
+            }
         }
         /// <summary>
         /// 建立包
         /// </summary>
         public static DataPackage BuildDataPackage(HeaderEnum headerEnum, Int64 id, byte[] str)
         {
-            DataPackage dataPackage = new DataPackage();
-            dataPackage.HeaderStr=headerEnum;
-            dataPackage.ID=id;
-            dataPackage.IsReceiptInfo=false;
-            if(headerEnum==HeaderEnum.回执)
-            dataPackage.IsReceiptInfo=true;
-
-            dataPackage.SendTime=DateTime.Now;
-            dataPackage.Data=str;
-            dataPackage.SendData = MergePackage(dataPackage);
-
-            var sad = Analytic.AnalyticDataPackage(dataPackage.SendData).Data;
-            //var sad = Analytic.StringToBytes(Analytic.BytesToString(str));
-            for (int i = 0; i < str.Length; i++)
+            lock (obj)
             {
-                if (str[i] != sad[i] || sad.Length != str.Length)
-                    Console.WriteLine("解析结果不一致！");
-            }
-            //if (!str.Equals(sad))
-            //    Console.WriteLine("解析结果不一致！");
+                DataPackage dataPackage = new DataPackage();
+                dataPackage.HeaderStr = headerEnum;
+                dataPackage.ID = id;
+                dataPackage.IsReceiptInfo = false;
+                if (headerEnum == HeaderEnum.回执)
+                    dataPackage.IsReceiptInfo = true;
 
-            return dataPackage;
+                dataPackage.SendTime = DateTime.Now;
+                dataPackage.Data = str;
+                dataPackage.SendData = MergePackage(dataPackage);
+
+                var sad = Analytic.AnalyticDataPackage(dataPackage.SendData).Data;
+                //var sad = Analytic.StringToBytes(Analytic.BytesToString(str));
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] != sad[i] || sad.Length != str.Length)
+                        Console.WriteLine("解析结果不一致！");
+                }
+                //if (!str.Equals(sad))
+                //    Console.WriteLine("解析结果不一致！");
+
+                return dataPackage;
+            }
         }
         public static DataPackage BuildDataPackage(HeaderEnum headerEnum, Int64 id, string str)
         {
-            DataPackage dataPackage = new DataPackage();
-            dataPackage.HeaderStr = headerEnum;
-            dataPackage.ID = id;
-            dataPackage.IsReceiptInfo = false;
-            if (headerEnum == HeaderEnum.回执)
-                dataPackage.IsReceiptInfo = true;
+            lock (obj)
+            {
+                DataPackage dataPackage = new DataPackage();
+                dataPackage.HeaderStr = headerEnum;
+                dataPackage.ID = id;
+                dataPackage.IsReceiptInfo = false;
+                if (headerEnum == HeaderEnum.回执)
+                    dataPackage.IsReceiptInfo = true;
 
-            dataPackage.SendTime = DateTime.Now;
-            dataPackage.Data = StringToBytes(str);
-            dataPackage.SendData = MergePackage(dataPackage);
-            return dataPackage;
+                dataPackage.SendTime = DateTime.Now;
+                dataPackage.Data = StringToBytes(str);
+                dataPackage.SendData = MergePackage(dataPackage);
+                return dataPackage;
+            }
         }
 
 
@@ -115,23 +124,29 @@ namespace QDP2
         }
         public static byte[] StringToBytes(string str)
         {
-            if (string.IsNullOrWhiteSpace(str))
-                return new byte[0];
-            //return Encoding.ASCII.GetBytes(str);
+            lock (obj)
+            {
+                if (string.IsNullOrWhiteSpace(str))
+                    return new byte[0];
+                //return Encoding.ASCII.GetBytes(str);
 
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
+                byte[] bytes = new byte[str.Length * sizeof(char)];
+                System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            }
         }
         public static string BytesToString(byte[] bytes)
         {
-            //return Encoding.ASCII.GetString(bytes);
+            lock (obj)
+            {
+                //return Encoding.ASCII.GetString(bytes);
 
-            char[] chars = new char[bytes.Length / sizeof(char)];
-            if (bytes.Length % sizeof(char) > 0)
-                Console.WriteLine("数据转换有问题：");
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            return new string(chars);
+                char[] chars = new char[bytes.Length / sizeof(char)];
+                if (bytes.Length % sizeof(char) > 0)
+                    Console.WriteLine("数据转换有问题：");
+                System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+                return new string(chars);
+            }
         }
         /// <summary>
         /// 获取文件传输

@@ -27,11 +27,9 @@ namespace QDP2
             //初始化蜂窝
             //运行蜂窝（传输）
             //初始化系统超时
-            Console.WriteLine("输入自己IP");
-            //State.ClientInfo.IP = "127.0.0.1";
-            State.ClientInfo.Port = "8399";
+            Console.WriteLine("输入自己端口：");
+            State.ClientInfo.Port = Console.ReadLine();
             Console.WriteLine("输入对方IP");
-            //State.ServerInfo.IP = Console.ReadLine();
             State.ServerInfo.Port = "8398";
             UdpHelper.InitCliend(true);
             UdpHelper.Monitor();
@@ -45,21 +43,26 @@ namespace QDP2
             //运行容器（传输）
             //初始化系统超时
             Console.WriteLine("输入自己IP");
-            //State.ClientInfo.IP = "127.0.0.1";
             State.ClientInfo.Port = "8398";
             Console.WriteLine("输入对方IP");
-            State.ServerInfo.IP = "192.168.1.151";
-            State.ServerInfo.Port = "8399";
+            //State.ServerInfo.IP = "14.155.227.171";
+            State.ServerInfo.IP = Console.ReadLine();
+            Console.WriteLine("输入对方端口：");
+            State.ServerInfo.Port = Console.ReadLine();
+            //State.ServerInfo.Port = "8399";
             UdpHelper.InitCliend(false);
             UdpHelper.Monitor();
             Console.WriteLine("");
             Console.WriteLine("输入传输文件路径：");
-            //Operation.CreateContainer(Console.ReadLine());
+            string path = Console.ReadLine();
+            Console.WriteLine("输入传输文件名：");
+            string name = Console.ReadLine();
+            Operation.CreateContainer(path, name);
             //Operation.CreateContainer(@"H:\OpenStudio-1.13.3.44ac130fa7-Win64.exe");
             //Operation.CreateContainer(@"H:\XX.png");
-            Operation.CreateContainer(@"H:\dotNetFx45.exe");
+            //Operation.CreateContainer(@"H:\dotNetFx45.exe");
             //Operation.CreateContainer(@"H:\SQL.iso");
-            //Operation.CreateContainer(@"H:\Maya_16.0.1312.exe");
+            //Operation.CreateContainer(@"H:\Maya_16.0.1312.exe", "Maya_16.0.1312.exe");
             Operation.ConnectOperation();
             Operation.StartTimeoutWait();
             

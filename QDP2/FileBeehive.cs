@@ -19,6 +19,7 @@ namespace QDP2
         private ConcurrentDictionary<Int64, DataPackage> ThumBoxList = new ConcurrentDictionary<Int64, DataPackage>();
         public string FilePath { get; set; }
         public string FileInfo { get; set; }
+        public string FileName { get; set; }
         private bool isBegin = true;
         private Int64 currentWriteID = 1;
         /// <summary>
@@ -28,7 +29,8 @@ namespace QDP2
         {
             Task.Factory.StartNew(() =>
             {
-                FilePath = Environment.CurrentDirectory + @"\dotNetFx45.exe";
+                FileName = "Thum.ls";
+                FilePath = Environment.CurrentDirectory + @"\Thum.ls";
                 if (File.Exists(FilePath))
                     File.Delete(FilePath);
                 //State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -78,6 +80,10 @@ namespace QDP2
                 System.Console.WriteLine("写入数据完成！" + currentWriteID);
                 State.FS.Close();
                 State.FS.Dispose();
+
+                FileInfo fileInfo = new FileInfo(FilePath);
+                fileInfo.MoveTo(Environment.CurrentDirectory +@"\"+ FileName);
+                FilePath = Environment.CurrentDirectory + FileName;
             });
         }
         /// <summary>
@@ -90,8 +96,9 @@ namespace QDP2
         /// <summary>
         /// 合成文件
         /// </summary>
-        public void CompositeFile()
+        public void CompositeFile(string fileName)
         {
+            FileName = fileName;
             isBegin = false;
         }
     }

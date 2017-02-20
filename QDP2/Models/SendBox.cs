@@ -11,7 +11,7 @@ namespace QDP2.Models
     /// </summary>
     public class SendBox
     {
-        public SendBox()
+        public SendBox(string fileName)
         {
             ID = State.GetID();
             //加载数据
@@ -25,7 +25,7 @@ namespace QDP2.Models
             }
             else
             {
-                Data = Analytic.BuildDataPackage(HeaderEnum.完成, ID, new byte[0]);
+                Data = Analytic.BuildDataPackage(HeaderEnum.完成, ID, Analytic.StringToBytes(fileName));
                 State.ContainerStatus.IsCompleted = true;
                 BoxStatez = BoxState.Completed;
                 OvertimeObj.OvertimeValue = State.CompleteOverTime;

@@ -37,6 +37,10 @@ namespace QDP2
         /// 文件路径
         /// </summary>
         public string FilePath { get; set; }
+        /// <summary>
+        /// 文件名字
+        /// </summary>
+        public string FileName { get; set; }
         private bool isBegin = true;
         /// <summary>
         /// 开始发送
@@ -112,7 +116,7 @@ namespace QDP2
                             {
                                 for (int i = 0; i < BoxWarnNum - num; i++)
                                 {
-                                    SendBox box = new SendBox();
+                                    SendBox box = new SendBox(FileName);
                                     BoxList.TryAdd(box.ID, box);
                                     box.ActivityStart();
                                     if (box.BoxStatez == BoxState.Completed)
@@ -125,7 +129,7 @@ namespace QDP2
                             else
                             {
                                 //创建块
-                                SendBox box = new SendBox();
+                                SendBox box = new SendBox(FileName);
                                 //添加块至列表
                                 BoxList.TryAdd(box.ID, box);
                                 //开启块自主传输活动

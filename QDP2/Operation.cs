@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QDP2
@@ -20,6 +21,7 @@ namespace QDP2
             byte[] buffer0 = new byte[State.DataPackageSizeBackups];
             byte[] buffer1 = new byte[State.DataPackageSize];
             UdpHelper.SendData(Analytic.BuildDataPackage(HeaderEnum.连接, 0, buffer0));
+            Thread.Sleep(10);
             UdpHelper.SendData(Analytic.BuildDataPackage(HeaderEnum.连接, 1, buffer1));
         }
         /// <summary>
@@ -32,13 +34,14 @@ namespace QDP2
         /// <summary>
         /// 建立容器
         /// </summary>
-        public static void CreateContainer(string FilePath)
+        public static void CreateContainer(string FilePath,string FileName)
         {
             SendContainer container = new SendContainer();
             State.ContainerStatus = container;
             container.BoxWarnNum = State.BoxWarnNum;
             container.BoxAnomalyNum = State.BoxAnomalyNum;
             container.FilePath = FilePath;
+            container.FileName = FileName;
         }
         /// <summary>
         /// 销毁容器
@@ -105,7 +108,7 @@ namespace QDP2
                 case HeaderEnum.完成://组装文件
                     System.Console.WriteLine("接收数据完成！" + data.ID);
                     System.Console.WriteLine("接收数据总数！" + cc);
-                    State.FileBeehiveObj.CompositeFile();
+                    State.FileBeehiveObj.CompositeFile(Analytic.BytesToString(data.Data));
                     ReceiptOperation(Analytic.BuildDataPackage(HeaderEnum.完成, data.ID, "").SendData);
                     break;
                 case HeaderEnum.重连:

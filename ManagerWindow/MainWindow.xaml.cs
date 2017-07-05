@@ -1,0 +1,66 @@
+﻿using ManagerCore.Core;
+using ManagerCore.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace ManagerWindow
+{
+    /// <summary>
+    /// MainWindow.xaml 的交互逻辑
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private Node SelectNode = new Node();
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {//开启服务
+            SystemManager.StartService();
+
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {//关闭服务
+            SystemManager.StopService();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {//添加节点
+            SystemManager.AddNode();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {//删除节点
+            SystemManager.DelNode();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {//开启节点
+            SelectNode.Controller.TryStartNode();
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {//停止节点
+            SelectNode.Controller.TryStopNode();
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {//配置
+            SelectNode.Controller.SetterNode();
+        }
+
+    }
+}

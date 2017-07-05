@@ -51,7 +51,7 @@ namespace QDP2
             BoxNum = Analytic.GetFilesNum(FilePath, out LastBoxSize);
             Task.Factory.StartNew(() =>
             {
-                LoadBoxs(true);//第一批，回执后继续添加
+                LoadBoxs();//第一批，回执后继续添加
                 while (isBegin)
                 {
                     lock (State.FS)
@@ -101,33 +101,37 @@ namespace QDP2
         /// 加载数据块
         /// </summary>
         /// <param name="IsAnomaly">是否添加</param>
-        public void LoadBoxs(bool IsAdd)
+        public void LoadBoxs()
         {
             Task.Factory.StartNew(() =>
                 {
-                    if (IsCompleted)
-                        return;
-                    lock (obj)
+                    //此处这样写可以获得超高速度，可以对比研究下
+                    int num = BoxList.Count;
+                    while (num < BoxAnomalyNum)
                     {
-                        int num = BoxList.Count;
-                        if (num < BoxAnomalyNum)
+                        lock (obj)
                         {
+
+                            if (IsCompleted)
+                                return;
                             if (num < BoxWarnNum)
                             {
-                                for (int i = 0; i < BoxWarnNum - num; i++)
+                                //for (int i = 0; i < BoxWarnNum - num; i++)
+                                //{
+                                SendBox box = new SendBox(FileName);
+                                BoxList.TryAdd(box.ID, box);
+                                box.ActivityStart();
+                                if (box.BoxStatez == BoxState.Completed)
                                 {
-                                    SendBox box = new SendBox(FileName);
-                                    BoxList.TryAdd(box.ID, box);
-                                    box.ActivityStart();
-                                    if (box.BoxStatez == BoxState.Completed)
-                                    {
-                                        IsCompleted = true;
-                                        return;
-                                    }
+                                    IsCompleted = true;
+                                    return;
                                 }
+                                //}
                             }
                             else
                             {
+                                //减速
+                                //Thread.Sleep(1);
                                 //创建块
                                 SendBox box = new SendBox(FileName);
                                 //添加块至列表
@@ -145,6 +149,59 @@ namespace QDP2
                     }
                 });
         }
+        //public void LoadBoxs()
+        //{
+        //    Task.Factory.StartNew(() =>
+        //    {
+        //        while (isBegin)
+        //        {
+        //            if (IsCompleted)
+        //                return;
+        //            lock (obj)
+        //            {
+        //                int num = BoxList.Count;
+        //                if (num < BoxAnomalyNum)
+        //                {
+        //                    if (num < BoxWarnNum)
+        //                    {
+        //                        //for (int i = 0; i < BoxWarnNum - num; i++)
+        //                        //{
+        //                        SendBox box = new SendBox(FileName);
+        //                        BoxList.TryAdd(box.ID, box);
+        //                        box.ActivityStart();
+        //                        if (box.BoxStatez == BoxState.Completed)
+        //                        {
+        //                            IsCompleted = true;
+        //                            return;
+        //                        }
+        //                        //}
+        //                    }
+        //                    else
+        //                    {
+        //                        //System.Console.WriteLine("到达警戒值");
+        //                        ////降低速度
+        //                        //Thread.Sleep(1);
+        //                        //创建块
+        //                        SendBox box = new SendBox(FileName);
+        //                        //添加块至列表
+        //                        BoxList.TryAdd(box.ID, box);
+        //                        //开启块自主传输活动
+        //                        box.ActivityStart();
+        //                        if (box.BoxStatez == BoxState.Completed)
+        //                        {
+        //                            IsCompleted = true;
+        //                            return;
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    //System.Console.WriteLine("到达极限值");
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
         /// <summary>
         /// 进入待发送列表
         /// </summary>
@@ -164,7 +221,7 @@ namespace QDP2
             if (BoxList.TryRemove(box.ID, out box))
             {
                 box.ActivityRemove();
-                LoadBoxs(true);//销毁添加
+                //LoadBoxs(true);//销毁添加
             }
         }
         /// <summary>

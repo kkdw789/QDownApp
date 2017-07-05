@@ -36,8 +36,9 @@ namespace QDP2
                 //State.FS = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 //while (isBegin || ThumBoxList.Count > 0)
                 //{
-                    using (State.FS=new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-                    {
+                    //using (State.FS=new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                    //{
+                        State.FS=new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
                         while (isBegin || ThumBoxList.Count > 0)
                         {
                             //Thread.Sleep(10);
@@ -45,7 +46,7 @@ namespace QDP2
                             ThumBoxList.TryRemove(currentWriteID, out item);
                             if (item != null)
                             {
-                                //System.Console.WriteLine("写入数据！" + currentWriteID);
+                                System.Console.WriteLine("写入数据！" + currentWriteID);
                                 currentWriteID++;
                                 Analytic.WriteFlieData(item.Data);
                             }
@@ -55,7 +56,7 @@ namespace QDP2
                                 ThumBoxList = null;
                                 break;
                             }
-                        }
+                        //}
                     }
 
                     //lock (State.FS)

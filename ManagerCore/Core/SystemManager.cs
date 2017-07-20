@@ -12,6 +12,8 @@ namespace ManagerCore.Core
     /// </summary>
     public class SystemManager
     {
+        public delegate void ChangeNodeDelegate(Group group);
+        public event ChangeNodeDelegate OnReceiveMessage;
 
         private static object _lockOtherData = new object();//初始化锁
         private static SystemManager _instance = null;//自身对象
@@ -36,7 +38,7 @@ namespace ManagerCore.Core
             }
         }
 
-        private List<Group> Groups = new List<Group>();
+        public List<Group> Groups = new List<Group>();
         public void StartService()
         {
             M_Net.StateReceive();
@@ -46,10 +48,20 @@ namespace ManagerCore.Core
             if (Groups.Find(f => f.GroupId == "q1") == null)
                 Groups.Add(group);
         }
-        private void AddNode(string groupName,Node newNode)
+        public void StopService()
         {
-            Groups.FirstOrDefault(f => f.GroupId == groupName).Nodes.Add(newNode);
+            
+
         }
+        public void GroupChange(Group group)
+        {
+            if (OnReceiveMessage != null)
+                OnReceiveMessage(group);
+        }
+        //private void AddNode(string groupName, Node newNode)
+        //{
+        //    Groups.FirstOrDefault(f => f.GroupId == groupName).Nodes.Add(newNode);
+        //}
         /// <summary>
         /// 同步信息接收回调
         /// </summary>
@@ -65,11 +77,16 @@ namespace ManagerCore.Core
         /// <summary>
         /// 节点连接信息接收回调
         /// </summary>
-        public void SyncCompleteInfoCallback(string id,Socket tcpClient,string addGroup)
+        public Node SyncCompleteInfoCallback(string id, Socket tcpClient, string addGroup)
         {
             Node node = new Node();
             node.NewNode(id,tcpClient);
             Groups.Find(f=>f.GroupId=="q1").AddNode(node);
+            return node;
+        }
+        public void SyncEnd(Node node)
+        {
+            
         }
     }
 }

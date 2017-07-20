@@ -3,17 +3,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ListBox HorizontalAlignment="Left" Height="274" Margin="27,36,0,0" VerticalAlignment="Top" Width="83"/>
+        <ListBox x:Name="listNode" HorizontalAlignment="Left" Height="274" Margin="0,36,0,0" VerticalAlignment="Top" Width="221">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Height="50" Orientation="Horizontal" >
+                        <TextBlock Text="{Binding ID}"></TextBlock>
+                        <TextBlock Text="{Binding State}" Margin="5,0,0,0"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Label Content="节点状态列表:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Button Content="开启" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <Button Content="关闭" HorizontalAlignment="Left" Margin="340,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <Button Content="添加节点" HorizontalAlignment="Left" Margin="204,47,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
-        <Button Content="删除节点" HorizontalAlignment="Left" Margin="340,47,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-        <Label Content="服务器" HorizontalAlignment="Left" Margin="136,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="节点" HorizontalAlignment="Left" Margin="136,87,0,0" VerticalAlignment="Top"/>
-        <Button Content="开启" HorizontalAlignment="Left" Margin="204,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
-        <Button Content="停止" HorizontalAlignment="Left" Margin="340,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
-        <Button Content="配置" HorizontalAlignment="Left" Margin="204,133,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6"/>
-
+        <Button Content="开启" HorizontalAlignment="Left" Margin="294,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+        <Button Content="关闭" HorizontalAlignment="Left" Margin="430,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button IsEnabled="False" Content="添加节点" HorizontalAlignment="Left" Margin="294,47,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <Button IsEnabled="False" Content="删除节点" HorizontalAlignment="Left" Margin="430,47,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+        <Label Content="服务器" HorizontalAlignment="Left" Margin="226,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="节点" HorizontalAlignment="Left" Margin="226,87,0,0" VerticalAlignment="Top"/>
+        <Button IsEnabled="False" Content="开启" HorizontalAlignment="Left" Margin="294,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+        <Button IsEnabled="False" Content="停止" HorizontalAlignment="Left" Margin="430,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_5"/>
+        <Button IsEnabled="False" Content="配置" HorizontalAlignment="Left" Margin="294,133,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_6"/>
+        <Button IsEnabled="False" Content="测试" HorizontalAlignment="Left" Margin="430,133,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_7"/>
     </Grid>
 </Window>

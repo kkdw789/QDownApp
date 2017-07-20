@@ -25,6 +25,21 @@ namespace ManagerWindow
         public MainWindow()
         {
             InitializeComponent();
+            ManagerCore.Core.SystemManager.Instance.OnReceiveMessage += Instance_OnReceiveMessage;  
+            
+        }
+
+        //加载列表
+        void Instance_OnReceiveMessage(Group group)
+        {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
+                if (group != null)
+                {
+                    listNode.ItemsSource = group.Nodes;
+                    listNode.UpdateLayout();
+                }
+            }));
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {//开启服务
@@ -33,7 +48,7 @@ namespace ManagerWindow
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {//关闭服务
-            //SystemManager.Instance.StopService();
+            SystemManager.Instance.StopService();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -59,6 +74,11 @@ namespace ManagerWindow
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {//配置
             //SelectNode.Instance.Controller.SetterNode();
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            
         }
 
     }

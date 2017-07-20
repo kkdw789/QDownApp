@@ -30,14 +30,17 @@ namespace ManagerCore.Core
                 List<Node> nodes = currentGroup.Nodes.Where(c => c.State == 1).ToList();
                 for (int i = 0; i < nodes.Count; i++)
                 {
-                    if (nodes.Count < 2)
-                        break;
-                    if (i + 1 < nodes.Count)
-                        ContrastNode(nodes[i], nodes[i + 1]);
-                    else
-                        ContrastNode(nodes[i], nodes[0]);
-                    if (nodes.Count < 2 || nodes.Count <= i)
-                        break;
+                    if (nodes[i].State == 1)
+                    {
+                        if (nodes.Count < 2)
+                            break;
+                        if (i + 1 < nodes.Count)
+                            ContrastNode(nodes[i], nodes[i + 1]);
+                        else
+                            ContrastNode(nodes[i], nodes[0]);
+                        if (nodes.Count < 2 || nodes.Count <= i)
+                            break;
+                    }
                 }
                 scanningTimer.Start();
             };
@@ -57,16 +60,13 @@ namespace ManagerCore.Core
         /// <returns></returns>
         private void ContrastNode(Node node1, Node node2)
         {
-            //if (node1.FileList.Except(node2.FileList).Count() > 0)
+            //if (node1.LastSyncData != node2.LastSyncData)
             //{
-            if (node1.LastSyncData != node2.LastSyncData)
-            {
                 currentGroup.RemoveNode(node1);
                 currentGroup.RemoveNode(node2);
 
                 SyncBox box = new SyncBox(node1, node2, this);
                 currentGroup.SyncBoxs.Add(box);
-            }
             //}
         }
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ManagerCore.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace ManagerCore.Core
         private ManualResetEvent tcpClientConnected = new ManualResetEvent(false);
 
         /// <summary>
-        /// 申请加入（首次）
+        /// 开启申请加入（首次）
         /// </summary>
         /// <param name="post"></param>
         public static void StateReceive(int post = 8888)
@@ -40,11 +41,11 @@ namespace ManagerCore.Core
             Socket server = (Socket)iar.AsyncState;
             Socket client = server.EndAccept(iar);
             tcpNodes.Add(client.RemoteEndPoint.ToString(), client);
-            SystemManager.Instance.SyncCompleteInfoCallback(client.LocalEndPoint.ToString(), client, "q1");
-            new Thread(new ParameterizedThreadStart(ReceiveInfo)).Start(client);
+            Node node = SystemManager.Instance.SyncCompleteInfoCallback(client.RemoteEndPoint.ToString(), client, "q1");
+            new Thread(new ParameterizedThreadStart(ReceiveInfo)).Start(node);
             server.BeginAccept(new AsyncCallback(CallbackAccept), server);
         }
-        private void Close(TcpClient client)
+        public void Close(TcpClient client)
         {
             if (client.Connected)
             {
@@ -71,13 +72,24 @@ namespace ManagerCore.Core
             byte[] datas;
             while (true)
             {
-                datas = new byte[1024*64];
+                datas = new byte[1024];
                 int rec = node.TcpNodeSocket.Receive(datas);
                 //当客户端发来的消息长度为0时，表明结束通信
                 if (rec == 0)
                     break;
+                else
+                {
+                    string str = Encoding.ASCII.GetString(datas, 0, datas.Length);
+                    if(!string.IsNullOrWhiteSpace(str))
+                    {//解析，释放节点
+                        if (str.Contains("SyncEnd"))
+                        {
+                            node.SyncEnd(true,"",);
+                        }
+                    }
+                }
             }
-            string ss=Encoding.ASCII.GetString(datas,0,datas.Length);
+            
         }
         /// <summary>
         /// 断开连接
@@ -116,7 +128,7 @@ namespace ManagerCore.Core
         public static void DroppedNode(Node node)
         {
             //改变节点状态
-            node.State = 2;
+            node.State = 3;
         }
 
         /// <summary>
@@ -141,6 +153,5 @@ namespace ManagerCore.Core
         {
 
         }
-
     }
 }

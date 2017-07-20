@@ -31,6 +31,7 @@ namespace ManagerCore.Core
         public void AddNode(Node node)
         {
             Nodes.Add(node);
+            SystemManager.Instance.GroupChange(this);
         }
         /// <summary>
         /// 删除节点
@@ -38,6 +39,7 @@ namespace ManagerCore.Core
         public void RemoveNode(Node node)
         {
             Nodes.Remove(node);
+            SystemManager.Instance.GroupChange(this);
         }
         /// <summary>
         /// 同步中节点列表

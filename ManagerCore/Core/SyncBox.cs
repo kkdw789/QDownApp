@@ -13,6 +13,8 @@ namespace ManagerCore.Core
         private MatchingAlgorithm Ma;
         public SyncBox(Node node1, Node node2,MatchingAlgorithm ma)
         {
+            node1.State = 2;
+            node2.State = 2;
             Ma = ma;
             Nodes.Add(node1, 0);
             Nodes.Add(node2, 0);
@@ -25,6 +27,8 @@ namespace ManagerCore.Core
                 Nodes[node] = 1;
             else
                 Nodes[node] = 2;
+               //异常处理
+
             if(Nodes.First().Value!=0&&Nodes.Last().Value!=0)
             {
                 //销毁当前盒子

@@ -39,12 +39,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\SocketClient.cs" />
     <Compile Include="Core\IOServer\FileBeehive.cs" />
     <Compile Include="Core\IOServer\FileManager.cs" />
     <Compile Include="Core\NodeServer\DownServer.cs" />
     <Compile Include="Core\NodeServer\UpdataServer.cs" />
     <Compile Include="Core\SyncServer\N_Net.cs" />
     <Compile Include="Core\SyncServer\SyncData.cs" />
+    <Compile Include="Core\SystemManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

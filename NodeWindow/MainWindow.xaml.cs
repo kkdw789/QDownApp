@@ -21,7 +21,6 @@ namespace ClientWindow
     /// </summary>
     public partial class MainWindow : Window
     {
-        static N_Net netServer = new N_Net();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +28,7 @@ namespace ClientWindow
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {//开始
-            netServer.GetClient();
+           NodeCore.Core.SystemManager.Instance.StartNode();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -39,7 +38,7 @@ namespace ClientWindow
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {//申请加入
-
+           NodeCore.Core.SystemManager.Instance.RegisterNode();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)

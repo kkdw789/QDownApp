@@ -18,7 +18,9 @@ namespace ManagerCore.Core
         public string IP { get; set; }
         //Port
         public string Port { get; set; }
-        //State
+        /// <summary>
+        /// 节点状态 0连接 1就绪 2同步  3异常
+        /// </summary>
         public long State { get; set; }
         //有效同步最新时间
         public DateTime LastSyncData { get; set; }
@@ -54,10 +56,11 @@ namespace ManagerCore.Core
         public void NewNode(string id, Socket tcpClient)
         {
             ID = id;
-            IP = id;
-            Port = id;
+            IP = id.Split(':')[0];
+            Port = id.Split(':')[1];
             LastSyncData = DateTime.MinValue;
             TcpNodeSocket = tcpClient;
+            State = 1;
         }
 
         //配置（速度限制、同步时间、卡断链路）
@@ -72,7 +75,12 @@ namespace ManagerCore.Core
             //通过Net发送消息给Node
             M_Net.TrySync(this, comNode);
         }
-        //同步完成回调
+        /// <summary>
+        /// 同步完成回调
+        /// </summary>
+        /// <param name="isOK"></param>
+        /// <param name="err"></param>
+        /// <param name="lastTime">返回同步最后文件时间</param>
         public void SyncEnd(bool isOK,string err,DateTime lastTime)
         {
             if (isOK)
